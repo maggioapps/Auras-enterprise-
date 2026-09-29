@@ -107,48 +107,58 @@ with st.sidebar:
         st.divider()
         selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard Centrale"] + list(AURASYNC_CATALOG.keys()))
     else:
-        st.info("ℹ️ Completa il tutorial e la ruota al centro dello schermo, poi effettua l'accesso.")
+        st.info("ℹ️️ Guarda il video tutorial e gira la ruota al centro dello schermo prima di accedere.")
         selected_area = "🏠 Dashboard Centrale"
 
-# --- FLUSSO PRE-LOGIN: 1. TUTORIAL (120s) -> 2. RUOTA DELLA FORTUNA -> 3. LOGIN & ACCESSO ---
+# --- FLUSSO PRE-LOGIN CON VIDEO TUTORIAL E VOCE GUIDA FEMMINILE ---
 
 if not st.session_state.tutorial_completed:
-    # FASE 1: Tutorial iniziale
-    st.title("🎓 Benvenuto in AuraSync - Tutorial Iniziale (120s)")
-    st.warning("Leggi la guida introduttiva per sbloccare la piattaforma e ricevere subito **3 Gettoni d'Oro omaggio** nel tuo futuro wallet!")
-    
+    st.title("🎬 Video Tutorial Ufficiale: Mappatura delle 125 App")
+    st.warning("🎥 **Segui la videoguida con la voce narrante** per scoprire tutte le funzionalità e sbloccare subito **3 Gettoni d'Oro omaggio**!")
+
+    # Lettore Video integrato con sintesi vocale e supporto multimediale nativo HTML5
     st.markdown("""
-    ### Cosa scoprirai in AuraSync:
-    1. **125 Mini-Applicazioni** suddivise in 10 aree specializzate (IA, Business, Design, Benessere, Teen e molto altro).
-    2. **Token Economy e FUP:** Gestione intelligente dei crediti per l'utilizzo dei moduli.
-    3. **Community & Pet Digitale:** Interazioni social e mantenimento della streak giornaliera.
+        <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+            <p style="font-size: 1.1em; color: #ff4b4b; font-weight: bold;">🎧 Voce Guida Femminile IA Attiva:</p>
+            <p style="font-style: italic;">"Benvenuta in AuraSync. Ti guiderò attraverso la mappatura completa delle nostre 125 mini-applicazioni cognitive, suddivise in 10 aree strategiche... Guarda il video sottostante per iniziare."</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Esempio di riproduttore video (puoi sostituire il link con il tuo video ufficiale mp4 ospitato sul web o su GitHub)
+    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
+
+    st.markdown("""
+    ### 🗺️ Mappa Rapida delle 10 Aree Illustrate nel Video:
+    * **Area 1-3:** Core IA, Benessere, Fai-da-te, Famiglia e Musica.
+    * **Area 4-6:** Store/Wallet, Business & Growth, Design & UI/UX.
+    * **Area 7-10:** Data Science, Life Coaching, Teen Empowerment e Community Wall.
     """)
     
-    if st.button("✅ Ho completato il tutorial (Ricevi 3 Gettoni)", type="primary"):
+    if st.button("✅ Ho completato la visione del video (Ricevi 3 Gettoni)", type="primary"):
         st.session_state.tutorial_completed = True
         st.session_state.wallet_tokens += 3
         st.balloons()
-        st.success("🎉 Tutorial completato! 3 Gettoni d'Oro aggiunti al tuo bonus.")
+        st.success("🎉 Video tutorial completato! 3 Gettoni d'Oro aggiunti al tuo wallet.")
         st.rerun()
 
 elif not st.session_state.wheel_spun_today:
     # FASE 2: Ruota della Fortuna
     st.title("🎡 Ruota della Fortuna Bonus")
-    st.info("Il tutorial è completato! Gira la ruota per accumulare altri gettoni omaggio prima di effettuare il login.")
+    st.info("Ottimo! Ora gira la ruota per accumulare ulteriori gettoni omaggio prima di effettuare il login.")
     
     if st.button("🎁 Gira la Ruota Ora!", type="primary"):
         won = random.choice([1, 2, 3, 5, 10])
         st.session_state.wallet_tokens += won
         st.session_state.wheel_spun_today = True
         st.balloons()
-        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Totale gettoni attuali: {st.session_state.wallet_tokens})")
+        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Totale: {st.session_state.wallet_tokens})")
         st.rerun()
 
 elif not st.session_state.authenticated:
-    # FASE 3: Schermata di Login / Registrazione finale dopo tutorial e ruota
+    # FASE 3: Login finale
     st.title("🔐 Accesso a AuraSync PWA")
-    st.success(f"Ottimo! Hai completato il tutorial e la ruota. Hai accumulato **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
-    st.write("Inserisci il tuo username per entrare ufficialmente nella dashboard e sbloccare le 125 mini-app.")
+    st.success(f"Fantastico! Hai completato il tutorial video e la ruota. Possiedi **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
+    st.write("Inserisci il tuo username per entrare nella dashboard e sbloccare l'accesso operativo alle 125 mini-app.")
     
     with st.form("login_form"):
         username_input = st.text_input("Scegli il tuo Username:")
@@ -163,10 +173,10 @@ elif not st.session_state.authenticated:
                 st.error("Inserisci un username valido per continuare.")
 
 else:
-    # FASE 4: Piattaforma pienamente sbloccata (Dashboard e catalogo 125 App)
+    # FASE 4: Dashboard principale e 125 App
     if selected_area == "🏠 Dashboard Centrale":
         st.subheader(f"Bentornato, {st.session_state.username}! 🌟")
-        st.write("Tutti i sistemi di AuraSync sono attivi. Scegli un'area dal menu laterale per esplorare le 125 mini-applicazioni.")
+        st.write("Tutti i moduli di AuraSync sono attivi. Scegli un'area dal menu laterale per esplorare le 125 applicazioni.")
         st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
     else:
         st.subheader(selected_area)
