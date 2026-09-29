@@ -1,4 +1,4 @@
-Non cdimport streamlit as st
+import streamlit as st
 
 # Configurazione della pagina principale
 st.set_page_config(
@@ -213,7 +213,7 @@ else:
             ]
             sel_cat_ia = st.selectbox("Seleziona Categoria IA:", cats_ia)
             if "10. 🔒 IL TUO BRANCH ESCLUSIVO" in sel_cat_ia and not SEI_ADMIN:
-                st.warning("⚠️ Branch Master proprietario protetto. Richiede licenza di prova da 100€.")
+                st.warning("⚠️️ Branch Master proprietario protetto. Richiede licenza di prova da 100€.")
                 st.markdown("[💳 SBLOCCA IL BRANCH PRINCIPALE (100€)](https://buy.stripe.com/tuo_link_100_euro)")
             else:
                 st.success(f"Accesso consentito a: {sel_cat_ia}")
