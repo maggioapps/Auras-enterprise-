@@ -49,7 +49,6 @@ if st.session_state.utente_corrente is None:
         u_log = st.sidebar.text_input("Username")
         p_log = st.sidebar.text_input("Password", type="password")
         if st.sidebar.button("Entra"):
-            # Controllo credenziali (compatibile sia con dict admin che utenti standard)
             db_user = st.session_state.utenti_registrati.get(u_log)
             pass_valida = False
             eta_utente = 25
@@ -223,9 +222,9 @@ else:
                 st.success("🌱 Diagnosi completata: Carenza di azoto rilevata. Piano di concimazione organica generato!")
 
     elif st.session_state.modulo_attivo == "AuraKids":
-        st.header("👨‍👩‍👧‍👦 AuraKids & Paws (Fascia 0-18 Anni)")
+        st.header("👨‍👩‍👧‍‍👦 AuraKids & Paws (Fascia 0-18 Anni)")
         eta_bambino = st.slider("Seleziona la fascia d'età del minore:", 0, 18, 5)
-        st.info(f准Stai visualizzando i protocolli nutrizionali, svezzamento e gestione emotiva dedicati all'età di {eta_bambino} anni.")
+        st.info(f"Stai visualizzando i protocolli nutrizionali, svezzamento e gestione emotiva dedicati all'età di {eta_bambino} anni.")
         st.write("• Guida pedagogica personalizzata")
         st.write("• Supporto compiti e gestione capricci")
 
@@ -235,7 +234,7 @@ else:
         problema = st.text_input("Cosa devi riparare? (es. rubinetto che perde, catena bici, lavatrice)")
         if st.button("Genera Guida di Riparazione"):
             if problema:
-                st.success(f"🔧 Guida generata per: {problema}. Risparmio stimato stimato: ~85€!")
+                st.success(f"🔧 Guida generata per: {problema}. Risparmio stimato: ~85€!")
             else:
                 st.warning("Inserisci il problema da risolvere.")
 
