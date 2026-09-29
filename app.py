@@ -9,7 +9,6 @@ st.set_page_config(
 
 # --- 1. MEMORIA E DATABASE UTENTI SIMULATO ---
 if 'utenti_registrati' not in st.session_state:
-    # Account Amministratore Principale con privilegi illimitati
     st.session_state.utenti_registrati = {"admin_principale": "TuaPasswordAdminSegreta123"}
 
 if 'utente_corrente' not in st.session_state:
@@ -22,9 +21,13 @@ if 'wallet_platino' not in st.session_state:
 if 'streak_giorni' not in st.session_state:
     st.session_state.streak_giorni = 1
 if 'pet_health' not in st.session_state:
-    st.session_state.pet_health = 100 # Tamagotchi Emotivo (100% = felice)
+    st.session_state.pet_health = 100 
 
-# --- 2. BARRA LATERALE: ACCOUNT, WALLET & ADMIN ---
+# Controllo per aprire la ruota della fortuna in automatico al primo accesso/sessione
+if 'ruota_gia_vista' not in st.session_state:
+    st.session_state.ruota_gia_vista = False
+
+# --- 2. BARRA LATERALE: ACCOUNT, WALLET, ABBONAMENTI & ADMIN ---
 st.sidebar.markdown("### 🔐 AuraSync Security Hub")
 
 if st.session_state.utente_corrente is None:
@@ -63,6 +66,7 @@ if st.session_state.utente_corrente is None:
             if pass_valida:
                 st.session_state.utente_corrente = u_log
                 st.session_state.utente_eta = eta_utente
+                st.session_state.ruota_gia_vista = False # Riattiva la ruota al nuovo login
                 st.rerun()
             else:
                 st.sidebar.error("Credenziali non valide!")
@@ -71,11 +75,18 @@ else:
     st.sidebar.markdown(f"🪙 **Oro:** {st.session_state.wallet_oro} | 💎 **Platino:** {st.session_state.wallet_platino}")
     st.sidebar.markdown(f"🔥 **Streak:** {st.session_state.streak_giorni} giorni | 🐾 **Pet Health:** {st.session_state.pet_health}%")
     
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 💳 Abbonamenti & Store Stripe")
+    st.sidebar.markdown("[🪙 Acquista Gettoni](https://buy.stripe.com/tuo_link_gettoni)")
+    st.sidebar.markdown("[⭐ Abbonamento Full Access (49€)](https://buy.stripe.com/tuo_link_abbonamento)")
+    st.sidebar.markdown("[🚀 Licenza Master Branch (100€)](https://buy.stripe.com/tuo_link_100_euro)")
+    st.sidebar.markdown("---")
+    
     if st.sidebar.button("🚪 Logout"):
         st.session_state.utente_corrente = None
+        st.session_state.ruota_gia_vista = False
         st.rerun()
 
-# Verifica se l'utente corrente è l'amministratore supremo
 SEI_ADMIN = (st.session_state.utente_corrente == "admin_principale")
 ETA_UTENTE = st.session_state.get('utente_eta', 25)
 IS_MAGGIORENNE = (SEI_ADMIN or ETA_UTENTE >= 18)
@@ -83,9 +94,40 @@ IS_MAGGIORENNE = (SEI_ADMIN or ETA_UTENTE >= 18)
 if SEI_ADMIN:
     st.sidebar.info("👑 **Modalità Admin Suprema:** Risorse illimitate e sbloccate.")
 
-# --- 3. HOME LIBERA A ICONE IN ORDINE ALFABETICO ---
-st.title("🚀 AuraSync - Cognitive Operating System")
+# --- 3. INTESTAZIONE CON BOTTONE SOS ROSSO IN ALTO A DESTRA ---
+col_head1, col_head2 = st.columns([4, 1])
+
+with col_head1:
+    st.title("🚀 AuraSync - Cognitive Operating System")
+
+with col_head2:
+    st.markdown("<br>", unsafe_allow_html=True) # Spaziatura estetica
+    if st.button("🚨 AURA SOS", type="primary", use_container_width=True):
+        st.error("⚡ **EMERGENZA ATTIVATA!** Protocollo di crisi avviato in background. Risoluzione immediata in corso...")
+
 st.write("Piattaforma SaaS PWA globale. Esplora liberamente i moduli specialistici, i tool di intelligenza artificiale e le funzioni dirompenti.")
+
+# --- 4. POPUP AUTOMATICO: RUOTA DELLA FORTUNA AL PRIMO ACCESSO ---
+if not st.session_state.ruota_gia_vista:
+    st.markdown("---")
+    st.info("🎁 **Bonus Benvenuto / Accesso Giornaliero Rilevato!** La Ruota della Fortuna si è aperta in automatico per te.")
+    
+    with st.container():
+        st.subheader("🎡 Ruota della Fortuna (Loot Table Automatica)")
+        st.write("Gira la ruota per riscuotere il tuo premio giornaliero di gettoni!")
+        
+        col_r1, col_r2 = st.columns(2)
+        with col_r1:
+            if st.button("✨ Gira la Ruota Ora!", use_container_width=True):
+                st.session_state.wallet_oro += 3
+                st.session_state.ruota_gia_vista = True
+                st.success("🎉 Complimenti! Hai vinto **3 Gettoni d'Oro** bonus accreditati nel wallet!")
+                st.rerun()
+        with col_r2:
+            if st.button("❌ Chiudi per ora", use_container_width=True):
+                st.session_state.ruota_gia_vista = True
+                st.rerun()
+    st.markdown("---")
 
 st.markdown("---")
 st.subheader("🗂️ Indice Generale delle Opzioni (In ordine alfabetico)")
@@ -95,7 +137,6 @@ if 'modulo_attivo' not in st.session_state:
     st.session_state.modulo_attivo = "Home"
 
 if st.session_state.modulo_attivo == "Home":
-    # Griglia di opzioni in perfetto ordine alfabetico
     c1, c2, c3 = st.columns(3)
     
     with c1:
@@ -111,7 +152,7 @@ if st.session_state.modulo_attivo == "Home":
             st.session_state.modulo_attivo = "AuraGreen"
             st.rerun()
 
-        st.markdown("### 👨‍👩‍👧‍👦 AuraKids & Paws (0-18)")
+        st.markdown("### 👨‍👩‍👧‍‍👦 AuraKids & Paws (0-18)")
         st.write("Nutrizione, svezzamento, supporto emotivo e scolastico diviso per fasce d'età.")
         if st.button("Apri AuraKids"):
             st.session_state.modulo_attivo = "AuraKids"
@@ -138,8 +179,8 @@ if st.session_state.modulo_attivo == "Home":
                 st.rerun()
 
     with c3:
-        st.markdown("### 🚨 AuraSOS & Extra")
-        st.write("Pulsante d'emergenza a 1 click, Aura Twin, Capsula del tempo e favole dinamiche.")
+        st.markdown("### 🚨 AuraTwin & Extra")
+        st.write("Aura Twin, Capsula del tempo e favole dinamiche della buonanotte.")
         if st.button("Apri Funzioni Extra"):
             st.session_state.modulo_attivo = "Extra"
             st.rerun()
@@ -158,7 +199,6 @@ if st.session_state.modulo_attivo == "Home":
             st.rerun()
 
 else:
-    # Pulsante universale per tornare alla Home
     if st.button("⬅️ Torna alla Home Principale"):
         st.session_state.modulo_attivo = "Home"
         st.rerun()
@@ -222,7 +262,7 @@ else:
                 st.success("🌱 Diagnosi completata: Carenza di azoto rilevata. Piano di concimazione organica generato!")
 
     elif st.session_state.modulo_attivo == "AuraKids":
-        st.header("👨‍👩‍👧‍‍👦 AuraKids & Paws (Fascia 0-18 Anni)")
+        st.header("👨‍👩‍👧‍👦 AuraKids & Paws (Fascia 0-18 Anni)")
         eta_bambino = st.slider("Seleziona la fascia d'età del minore:", 0, 18, 5)
         st.info(f"Stai visualizzando i protocolli nutrizionali, svezzamento e gestione emotiva dedicati all'età di {eta_bambino} anni.")
         st.write("• Guida pedagogica personalizzata")
@@ -252,10 +292,6 @@ else:
         st.header("🚨 Funzioni Extra di Dirompente Genialità")
         col_ex1, col_ex2 = st.columns(2)
         with col_ex1:
-            st.subheader("🚨 AuraSOS (Panic Button)")
-            if st.button("ATTIVA EMERGENZA SOS"):
-                st.error("⚡ Workflow di crisi attivato: Soluzione immediata erogata in background!")
-            
             st.subheader("🤖 Aura Twin")
             st.write("Il tuo gemello digitale ha preparato 3 bozze di lavoro per te questa mattina.")
 
