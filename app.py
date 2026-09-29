@@ -1,169 +1,158 @@
 import streamlit as st
-import random
 
 # Configurazione della pagina
-st.set_page_config(page_title="AuraSync Enterprise", page_icon="📱", layout="wide")
+st.set_page_config(
+    page_title="AuraSync Enterprise OS", 
+    page_icon="🧠", 
+    layout="wide"
+)
 
-# Stile CSS per i pulsanti a blocco stile smartphone
-st.markdown("""
-    <style>
-    div.stButton > button {
-        width: 100%;
-        height: 110px;
-        background-color: #f8f9fa;
-        color: #212529;
-        border: 2px solid #e9ecef;
-        border-radius: 20px;
-        font-size: 16px;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
-    div.stButton > button:hover {
-        background-color: #e2e6ea;
-        border-color: #adb5bd;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    }
-    </style>
-""", unsafe_allow_html=True)
+# --- MEMORIA DEI DATI UTENTI NEL COMPUTER (Simulata) ---
+if 'utenti_registrati' not in st.session_state:
+    # Utente Admin predefinito di sistema
+    st.session_state.utenti_registrati = {"admin_principale": "TuaPasswordAdminSegreta123"}
 
-# Inizializzazione dello stato
-if "pagina_attiva" not in st.session_state:
-    st.session_state["pagina_attiva"] = "Home"
-if "gettoni" not in st.session_state:
-    st.session_state["gettoni"] = 5
+if 'utente_corrente' not in st.session_state:
+    st.session_state.utente_corrente = None
 
-def vai_a_home():
-    st.session_state["pagina_attiva"] = "Home"
+# --- BARRA LATERALE: GESTIONE ACCOUNT & LOGIN ---
+st.sidebar.markdown("### 🔐 Accesso Account AuraSync")
 
-# ----------------- HOME / MENU PRINCIPALE (Stile Telefono) -----------------
-if st.session_state["pagina_attiva"] == "Home":
-    st.title("AuraSync Enterprise - Hub IA, Trend & Gamification")
-    st.write(f"🪙 **I tuoi Gettoni:** {st.session_state['gettoni']} | Scegli un'applicazione dal menu:")
-    st.divider()
-
-    # Prima riga di app
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("🎡\n\nRuota della Fortuna"):
-            st.session_state["pagina_attiva"] = "Ruota"
-            st.rerun()
-    with col2:
-        if st.button("🤖\n\nHub IA"):
-            st.session_state["pagina_attiva"] = "Hub IA"
-            st.rerun()
-    with col3:
-        if st.button("📊\n\nTrend & Mercato"):
-            st.session_state["pagina_attiva"] = "Trend"
-            st.rerun()
-
-    st.write("")
-
-    # Seconda riga di app
-    col4, col5, col6 = st.columns(3)
-    with col4:
-        if st.button("🎁\n\nArea Premi"):
-            st.session_state["pagina_attiva"] = "Premi"
-            st.rerun()
-    with col5:
-        if st.button("⚙️\n\nProva Gratuita"):
-            st.session_state["pagina_attiva"] = "Prova"
-            st.rerun()
-    with col6:
-        if st.button("👤\n\nIl mio Profilo"):
-            st.session_state["pagina_attiva"] = "Profilo"
-            st.rerun()
-
-# ----------------- 1. RUOTA DELLA FORTUNA -----------------
-elif st.session_state["pagina_attiva"] == "Ruota":
-    st.header("🎡 La Ruota della Fortuna AuraSync")
-    st.write("Gira la ruota per vincere gettoni e premi esclusivi! (Costo: 1 gettone)")
+# Se non sei loggato, mostra scelta tra Login e Registrazione
+if st.session_state.utente_corrente is None:
+    azione_account = st.sidebar.radio("Scegli:", ["Accedi (Login)", "Crea Nuovo Account"])
     
-    if st.button("🔄 Gira la Ruota!"):
-        if st.session_state["gettoni"] > 0:
-            st.session_state["gettoni"] -= 1
-            vincita = random.choice([0, 1, 3, 5, 10])
-            st.session_state["gettoni"] += vincita
-            if vincita > 0:
-                st.success(f"🎉 Complimenti! Hai vinto {vincita} gettoni!")
+    if azione_account == "Crea Nuovo Account":
+        st.sidebar.subheader("📝 Registrati")
+        nuovo_user = st.sidebar.text_input("Scegli Username")
+        nuova_pass = st.sidebar.text_input("Scegli Password", type="password")
+        if st.sidebar.button("Registrati Ora"):
+            if nuovo_user and nuova_pass:
+                if nuovo_user in st.session_state.utenti_registrati:
+                    st.sidebar.error("Questo username esiste già!")
+                else:
+                    st.session_state.utenti_registrati[nuovo_user] = nuova_pass
+                    st.sidebar.success("Account creato! Ora fai il Login.")
             else:
-                st.warning("Ops! Questa volta è andata male, riprova!")
+                st.sidebar.warning("Inserisci tutti i dati.")
+                
+    else:
+        st.sidebar.subheader("🔑 Login Utente")
+        user_input = st.sidebar.text_input("Username")
+        pass_input = st.sidebar.text_input("Password", type="password")
+        if st.sidebar.button("Entra nell'App"):
+            # Controllo credenziali
+            if user_input in st.session_state.utenti_registrati and st.session_state.utenti_registrati[user_input] == pass_input:
+                st.session_state.utente_corrente = user_input
+                st.rerun()
+            else:
+                st.sidebar.error("Username o password errati!")
+
+else:
+    # Se l'utente è loggato
+    st.sidebar.success(f"Benvenuto, **{st.session_state.utente_corrente}**!")
+    if st.sidebar.button("🚪 Esci (Logout)"):
+        st.session_state.utente_corrente = None
+        st.rerun()
+
+# --- VERIFICA SE SEI L'AMMINISTRATORE ---
+# Cambia 'admin_principale' con il nome utente esatto che usi per loggarti come admin!
+SEI_ADMIN = (st.session_state.utente_corrente == "admin_principale")
+
+if SEI_ADMIN:
+    st.sidebar.markdown("---")
+    st.sidebar.info("👑 **Modalità Admin attiva**: Funzioni illimitate e sbloccate.")
+
+# --- SEZIONE PRINCIPALE DELL'APP (Visibile solo se loggati) ---
+if st.session_state.utente_corrente is None:
+    st.title("🔒 AuraSync - Area Protetta")
+    st.warning("Per accedere alla piattaforma, ai modelli IA e ai trend, devi effettuare l'accesso o creare un account personale dalla barra laterale.")
+else:
+    # Menu di navigazione dell'app
+    sezione = st.sidebar.selectbox("Scegli Sezione:", [
+        "🏠 Home (Pagina Libera)", 
+        "🤖 Modelli Branch IA (10 Categorie)", 
+        "📈 Trend Finanziari & Social (10 Categorie)", 
+        "💎 Abbonamenti & Gettoni (Stripe)"
+    ])
+
+    if sezione == "🏠 Home (Pagina Libera)":
+        st.title("🚀 Benvenuto in AuraSync, " + st.session_state.utente_corrente + "!")
+        st.success("La tua dashboard personale è attiva.")
+        st.write("Usa il menu a sinistra per navigare tra i modelli avanzati e i trend di mercato.")
+
+    elif sezione == "🤖 Modelli Branch IA (10 Categorie)":
+        st.title("🤖 Libreria Modelli Branch IA")
+        
+        categorie_ia = [
+            "1. Analisi Cognitiva & Comportamentale",
+            "2. Sviluppo Codice & Architettura Software",
+            "3. Automazione Workflow & Agent Swarms",
+            "4. Sicurezza Informatica & Masking UI",
+            "5. Ottimizzazione Token & Economia IA",
+            "6. Generazione Contenuti & Copywriting Multilingua",
+            "7. Modelli Predittivi & Machine Learning",
+            "8. Integrazione API & Cloud Deployment",
+            "9. Simulazioni di Mercato & Game Theory",
+            "10. 🔒 IL TUO BRANCH ESCLUSIVO AURA-SYNC (Master 100€ a prova)"
+        ]
+        
+        cat_scelta = st.selectbox("Seleziona Categoria IA:", categorie_ia)
+        
+        if "10. 🔒 IL TUO BRANCH ESCLUSIVO" in cat_scelta:
+            if SEI_ADMIN:
+                st.success("🔓 [ADMIN] Accesso illimitato al tuo branch master personale concesso!")
+                st.write("Qui gestisci il codice proprietario in totale libertà.")
+            else:
+                st.warning("⚠️ Questo è un branch master proprietario protetto. Richiede la licenza di test da 100€.")
+                st.markdown("[💳 SBLOCCA IL BRANCH PRINCIPALE (100€)](https://buy.stripe.com/tuo_link_100_euro)")
         else:
-            st.error("Non hai abbastanza gettoni per girare la ruota!")
+            st.info(f"Stai esplorando: **{cat_scelta}**")
+            if SEI_ADMIN:
+                st.success("🟢 [ADMIN] Tutti i modelli avanzati di questa categoria sono gratuiti e illimitati per te.")
+            else:
+                st.write("• **Modelli 1 a 5:** 🟢 *Gratuiti*")
+                st.write("• **Modelli 6+:** 💎 *Avanzati a pagamento (Richiedono gettoni o abbonamento)*")
 
-    st.write(f"🪙 Gettoni attuali: {st.session_state['gettoni']}")
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
-
-# ----------------- 2. HUB IA -----------------
-elif st.session_state["pagina_attiva"] == "Hub IA":
-    st.header("🤖 Hub Intelligenza Artificiale")
-    st.write("Accedi agli strumenti di IA avanzati per generare testi, immagini e strategie.")
-    
-    prompt_ia = st.text_input("Scrivi qui il comando o la richiesta per l'IA:")
-    if st.button("Genera Risposta IA"):
-        if prompt_ia:
-            st.info(f"💡 Risposta elaborata dall'IA per: '{prompt_ia}' -> Questa è una simulazione avanzata della piattaforma AuraSync IA.")
+    elif sezione == "📈 Trend Finanziari & Social (10 Categorie)":
+        st.title("📈 Analisi Trend Finanziari & Social")
+        
+        categorie_trend = [
+            "1. Azioni Tech & Intelligenza Artificiale (Globali)",
+            "2. Criptovalute & Tokenomics di Mercato",
+            "3. Social Media Viral Trends (TikTok, Instagram, X)",
+            "4. Forex & Macroeconomia Internazionale",
+            "5. E-commerce & Consumer Spending Analytics",
+            "6. Venture Capital & Startup Funding Trends",
+            "7. Real Estate & Asset Digitali",
+            "8. Sentiment Analysis delle community globali",
+            "9. Green Energy & ESG Investment Trends",
+            "10. 🔒 PREVISIONI MASTER PROPRIETARIE (Branch Esclusivo 100€)"
+        ]
+        
+        trend_scelto = st.selectbox("Seleziona Categoria Trend:", categorie_trend)
+        
+        if "10. 🔒 PREVISIONI MASTER" in trend_scelto and not SEI_ADMIN:
+            st.warning("⚠️ Area riservata alle previsioni master proprietarie (100€ a prova).")
+            st.markdown("[💳 ACCEDI AL TREND MASTER (100€)](https://buy.stripe.com/tuo_link_100_euro)")
         else:
-            st.warning("Inserisci prima un testo o una richiesta.")
+            st.success("📊 Dati e analisi dei trend sbloccati.")
 
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
-
-# ----------------- 3. TREND & MERCATO -----------------
-elif st.session_state["pagina_attiva"] == "Trend & Mercato":
-    st.header("📊 Trend & Mercato")
-    st.write("Monitoraggio in tempo reale dei trend di mercato e delle opportunità digitali.")
-    st.metric(label="Crescita Trend IA", value="+45.2%", delta="5.4% rispetto a ieri")
-    
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
-
-# ----------------- 4. AREA PREMI -----------------
-elif st.session_state["pagina_attiva"] == "Premi":
-    st.header("🎁 Area Premi e Gettoni")
-    st.write(f"I tuoi gettoni disponibili: **{st.session_state['gettoni']} 🪙**")
-    st.write("Riscatta i tuoi premi esclusivi accumulando gettoni con la Ruota della Fortuna!")
-    
-    if st.button("Riscatta Buono Sconto (10 gettoni)"):
-        if st.session_state["gettoni"] >= 10:
-            st.session_state["gettoni"] -= 10
-            st.success("🎁 Premio riscattato con successo! Controlla la tua email.")
-        else:
-            st.error("Ti servono almeno 10 gettoni per questo premio.")
-
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
-
-# ----------------- 5. PROVA GRATUITA -----------------
-elif st.session_state["pagina_attiva"] == "Prova":
-    st.header("⚙️ Prova Gratuita")
-    st.write("La tua prova gratuita completa della piattaforma AuraSync Enterprise è attiva.")
-    st.success("Stai utilizzando tutte le funzioni sbloccate senza limitazioni.")
-    
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
-
-# ----------------- 6. PROFILO -----------------
-elif st.session_state["pagina_attiva"] == "Profilo":
-    st.header("👤 Il mio Profilo")
-    st.write("Gestisci le tue impostazioni personali e visualizza i tuoi progressi.")
-    st.text_input("Nome Utente", value="Utente AuraSync")
-    st.text_input("Email", value="maggioapps@example.com")
-    st.write(f"🪙 Gettoni nel saldo: {st.session_state['gettoni']}")
-    
-    st.divider()
-    if st.button("🏠 Torna alla Home"):
-        vai_a_home()
-        st.rerun()
+    elif sezione == "💎 Abbonamenti & Gettoni (Stripe)":
+        st.title("💎 Gestione Abbonamenti e Tariffe")
+        if SEI_ADMIN:
+            st.info("ℹ️ Pannello di controllo pagamenti visibile agli utenti standard.")
+            
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.subheader("🪙 Pacchetto Gettoni")
+            st.write("15€ (50 Gettoni)")
+            st.markdown("[ACQUISTA GETTONI](https://buy.stripe.com/tuo_link_gettoni)")
+        with col2:
+            st.subheader("🚀 Abbonamento Pro")
+            st.write("49€ / mese")
+            st.markdown("[ABBONATI ORA](https://buy.stripe.com/tuo_link_abbonamento)")
+        with col3:
+            st.subheader("👑 Licenza Master Branch")
+            st.write("100€ / accesso")
+            st.markdown("[SBLOCCA 100€ PROVA](https://buy.stripe.com/tuo_link_100_euro)")
