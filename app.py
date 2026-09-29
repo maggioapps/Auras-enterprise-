@@ -1,4 +1,4 @@
-import streamlit as st
+Non cdimport streamlit as st
 
 # Configurazione della pagina principale
 st.set_page_config(
@@ -22,10 +22,6 @@ if 'streak_giorni' not in st.session_state:
     st.session_state.streak_giorni = 1
 if 'pet_health' not in st.session_state:
     st.session_state.pet_health = 100 
-
-# Controllo per aprire la ruota della fortuna in automatico al primo accesso/sessione
-if 'ruota_gia_vista' not in st.session_state:
-    st.session_state.ruota_gia_vista = False
 
 # --- 2. BARRA LATERALE: ACCOUNT, WALLET, ABBONAMENTI & ADMIN ---
 st.sidebar.markdown("### 🔐 AuraSync Security Hub")
@@ -66,7 +62,6 @@ if st.session_state.utente_corrente is None:
             if pass_valida:
                 st.session_state.utente_corrente = u_log
                 st.session_state.utente_eta = eta_utente
-                st.session_state.ruota_gia_vista = False # Riattiva la ruota al nuovo login
                 st.rerun()
             else:
                 st.sidebar.error("Credenziali non valide!")
@@ -84,7 +79,6 @@ else:
     
     if st.sidebar.button("🚪 Logout"):
         st.session_state.utente_corrente = None
-        st.session_state.ruota_gia_vista = False
         st.rerun()
 
 SEI_ADMIN = (st.session_state.utente_corrente == "admin_principale")
@@ -101,33 +95,27 @@ with col_head1:
     st.title("🚀 AuraSync - Cognitive Operating System")
 
 with col_head2:
-    st.markdown("<br>", unsafe_allow_html=True) # Spaziatura estetica
+    st.markdown("<br>", unsafe_allow_html=True) 
     if st.button("🚨 AURA SOS", type="primary", use_container_width=True):
         st.error("⚡ **EMERGENZA ATTIVATA!** Protocollo di crisi avviato in background. Risoluzione immediata in corso...")
 
 st.write("Piattaforma SaaS PWA globale. Esplora liberamente i moduli specialistici, i tool di intelligenza artificiale e le funzioni dirompenti.")
 
-# --- 4. POPUP AUTOMATICO: RUOTA DELLA FORTUNA AL PRIMO ACCESSO ---
-if not st.session_state.ruota_gia_vista:
-    st.markdown("---")
-    st.info("🎁 **Bonus Benvenuto / Accesso Giornaliero Rilevato!** La Ruota della Fortuna si è aperta in automatico per te.")
+st.markdown("---")
+
+# --- 4. RUOTA DELLA FORTUNA SEMPRE VISIBILE NELLA HOME ---
+with st.container():
+    st.markdown("### 🎡 Ruota della Fortuna & Bonus Giornaliero (Loot Table)")
+    st.write("Gira la ruota in primo piano per riscuotere subito i tuoi gettoni bonus!")
     
-    with st.container():
-        st.subheader("🎡 Ruota della Fortuna (Loot Table Automatica)")
-        st.write("Gira la ruota per riscuotere il tuo premio giornaliero di gettoni!")
-        
-        col_r1, col_r2 = st.columns(2)
-        with col_r1:
-            if st.button("✨ Gira la Ruota Ora!", use_container_width=True):
-                st.session_state.wallet_oro += 3
-                st.session_state.ruota_gia_vista = True
-                st.success("🎉 Complimenti! Hai vinto **3 Gettoni d'Oro** bonus accreditati nel wallet!")
-                st.rerun()
-        with col_r2:
-            if st.button("❌ Chiudi per ora", use_container_width=True):
-                st.session_state.ruota_gia_vista = True
-                st.rerun()
-    st.markdown("---")
+    col_rf1, col_rf2 = st.columns([2, 3])
+    with col_rf1:
+        if st.button("✨ Gira la Ruota Ora (Bonus +3 Oro)", type="primary", use_container_width=True):
+            st.session_state.wallet_oro += 3
+            st.success("🎉 Hai vinto **3 Gettoni d'Oro** accreditati nel wallet!")
+            st.rerun()
+    with col_rf2:
+        st.info(f"🪙 Il tuo saldo attuale è di **{st.session_state.wallet_oro} Gettoni d'Oro** e **{st.session_state.wallet_platino} Monete Platino**.")
 
 st.markdown("---")
 st.subheader("🗂️ Indice Generale delle Opzioni (In ordine alfabetico)")
@@ -152,7 +140,7 @@ if st.session_state.modulo_attivo == "Home":
             st.session_state.modulo_attivo = "AuraGreen"
             st.rerun()
 
-        st.markdown("### 👨‍👩‍👧‍‍👦 AuraKids & Paws (0-18)")
+        st.markdown("### 👨‍👩‍👧‍👦 AuraKids & Paws (0-18)")
         st.write("Nutrizione, svezzamento, supporto emotivo e scolastico diviso per fasce d'età.")
         if st.button("Apri AuraKids"):
             st.session_state.modulo_attivo = "AuraKids"
@@ -329,7 +317,7 @@ else:
 
         with col_w2:
             st.subheader("🎡 Ruota della Fortuna (Loot Table)")
-            if st.button("Gira la Ruota Bonus"):
+            if st.button("Gira la Ruota Bonus (Store)"):
                 st.session_state.wallet_oro += 2
                 st.success("🎉 Hai vinto 2 Gettoni d'Oro bonus!")
 
