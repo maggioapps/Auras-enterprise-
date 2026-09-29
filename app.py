@@ -1,325 +1,163 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import random
 
-# Configurazione della pagina principale
+# Configurazione PWA
 st.set_page_config(
-    page_title="AuraSync - Cognitive Operating System", 
-    page_icon="🧠", 
-    layout="wide"
+    page_title="AuraSync - Cognitive Operating System",
+    page_icon="✨",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# --- 1. MEMORIA E DATABASE UTENTI SIMULATO ---
-if 'utenti_registrati' not in st.session_state:
-    st.session_state.utenti_registrati = {"admin_principale": "TuaPasswordAdminSegreta123"}
+# Inizializzazione dello State globale
+if "authenticated" not in st.session_state: st.session_state.authenticated = False
+if "username" not in st.session_state: st.session_state.username = ""
+if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
+if "pet_health" not in st.session_state: st.session_state.pet_health = 100
+if "tutorial_completed" not in st.session_state: st.session_state.tutorial_completed = False
+if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today = False
+if "daily_actions_left" not in st.session_state: st.session_state.daily_actions_left = 5
 
-if 'utente_corrente' not in st.session_state:
-    st.session_state.utente_corrente = None
+# CATALOGO CENTRALE DELLE 125 APPLICAZIONI DI AURASYNC
+AURASYNC_CATALOG = {
+    "🧠 Area 1: Core IA & Produttività": [
+        "1. AuraBot Universal Chat", "2. Branch Selector IA", "3. Voice & Persona Chameleon",
+        "4. AuraTwin Predittivo", "5. Prompt Engineering Studio", "6. Smart Summarizer",
+        "7. Global Trend Analyzer", "8. Cognitive Flow Optimizer", "9. Task Automator AI",
+        "10. Data Cleanse Tool", "11. Multi-Language Translator Hub", "12. Code Snippet Generator",
+        "13. API Connector Studio", "14. Document Semantic Search", "15. Context Memory Vault"
+    ],
+    "🌿 Area 2: Benessere, Fai-da-Te & Social": [
+        "16. AuraGreen Leaf Analyzer", "17. Smart Watering Scheduler", "18. Botanic Disease Tracker",
+        "19. AuraFix Hardware Diagnostic", "20. DIY Step-by-Step Guide", "21. Tool Inventory Manager",
+        "22. AuraPets Paws Health", "23. Pet Nutrition Advisor", "24. Behavioral Pet Tracker",
+        "25. Eco-Friendly Habit Builder", "26. Home Energy Auditor", "27. Waste Reduction Assistant",
+        "28. Indoor Climate Optimizer", "29. Smart Grocery Planner", "30. Green Space Designer",
+        "Social 1. Real-Time Viral Trend Radar", "Social 2. AI Content Hook & Caption Generator",
+        "Social 3. Cross-Platform Video Script Writer", "Social 4. Social Calendar & Timing Optimizer",
+        "Social 5. Competitor & Niche Analyzer"
+    ],
+    "📖 Area 3: Famiglia, Memoria & Musica": [
+        "31. Bedtime Story AI", "32. Moral Lesson Customizer", "33. Character Creator Studio",
+        "34. AuraSound Studio Lyrics (AI Lyricist)", "35. Melody & Binaural Generator", "36. Sleep & Focus Soundscapes",
+        "37. Time Capsule Cloud", "38. Family Memory Vault", "39. Future Letter Dispatcher",
+        "40. Daily Gratitude Journal", "41. Mood Tracker Emotivo", "42. Creative Writing Companion",
+        "43. Recipe & Cooking Assistant", "44. Event Planner Familiare", "45. Digital Scrapbook Creator"
+    ],
+    "💎 Area 4: Store, Wallet & Sicurezza": [
+        "46. Ruota della Fortuna Interattiva", "47. Streak & Habit Tracker", "48. Digital Pet Companion",
+        "49. Wallet Token Economy", "50. Stripe Checkout Integration", "51. Fair Use Policy Guard (FUP)",
+        "52. Aura Security Hub", "53. Age Verification Guard", "54. Admin Supreme Control Panel",
+        "55. AURA SOS Emergency Protocol", "56. PWA Offline Sync", "57. Data Privacy & GDPR Vault",
+        "58. User Feedback & Bug Reporter", "59. Onboarding Interactive Guide", "60. Custom Plugin Marketplace"
+    ],
+    "🚀 Area 5: Business & Growth": [
+        "61. Pitch Deck Generator AI", "62. SWOT Matrix Analyzer", "63. Business Model Canvas Builder",
+        "64. Competitor Pricing Spy", "65. HR Interview Simulator", "66. OKR & KPI Goal Tracker",
+        "67. B2B Email Outreach Writer", "68. Legal Contract Draft AI", "69. Crowdfunding Campaign Planner",
+        "70. Brand Tone of Voice Designer"
+    ],
+    "🎨 Area 6: Design & UI/UX": [
+        "71. Color Palette Harmony AI", "72. UI/UX Wireframe Planner", "73. Logo Concept Generator",
+        "74. Typography Pairer Pro", "75. AI Image Prompt Architect", "76. SVG Icon Code Creator",
+        "77. UX Microcopy Writer", "78. Moodboard Visualizer", "79. Landing Page Structure Optimizer",
+        "80. Accessibility (WCAG) Checker"
+    ],
+    "📊 Area 7: Data Science & Finanza": [
+        "81. Personal Budget Planner", "82. Crypto & Portfolio Tracker", "83. CSV/Excel Data Cleaner",
+        "84. SQL Query Builder AI", "85. Regex Pattern Generator", "86. Tax & Expense Estimator",
+        "87. Statistical Data Interpreter", "88. Loan & Mortgage Calculator", "89. JSON/XML Data Formatter",
+        "90. A/B Testing Statistical Calculator"
+    ],
+    "🧘 Area 8: Life Coaching & Mind": [
+        "91. Daily Habit Loop Builder", "92. Guided Meditation Script Writer", "93. Procrastination Breaker",
+        "94. Sleep Cycle Optimizer", "95. Book Notes & Summarizer", "96. Public Speaking Coach",
+        "97. Digital Detox Tracker", "98. Relationship & Empathy Advisor", "99. Travel Itinerary Planner",
+        "100. Life Vision Board Generator"
+    ],
+    "🎒 Area 9: Teen & Youth Empowerment": [
+        "101. School Homework Helper", "102. Exam Anxiety & Study Planner", "103. Language & Slang Bridge",
+        "104. Future Career Explorer", "105. Creative Writing & Manga Plotter", "106. Gamer Strategy & Build Planner",
+        "107. Teen Mood & Vibe Journal", "108. Pocket Coding & Game Dev Coach", "109. Music & Beat Maker Lyrist",
+        "110. Pocket Finance for Teens", "111. DIY Creative Room Decor", "112. Eco & Animal Activism Guide",
+        "113. Public Speaking & Debate Trainer", "114. Book & Comic Club Tracker", "115. Smart Sport & Workout Tracker",
+        "116. DIY Cosplay & Prop Planner", "117. Friends & Hangout Event Planner", "118. Digital Safety & Privacy Guardian",
+        "119. DIY Photography & Reel Editor", "120. Dream & Goal Board for Teens"
+    ],
+    "🌐 Area 10: Community & Public Wall": [
+        "121. AuraFeed Community Wall", "122. Creator Hall of Fame & Leaderboard",
+        "123. Public Prompt & Template Market", "124. Safe Community Moderation Guard",
+        "125. Collaborative Story & Song Jam"
+    ]
+}
 
-if 'wallet_oro' not in st.session_state:
-    st.session_state.wallet_oro = 10  # Bonus onboarding iniziale
-if 'wallet_platino' not in st.session_state:
-    st.session_state.wallet_platino = 3
-if 'streak_giorni' not in st.session_state:
-    st.session_state.streak_giorni = 1
-if 'pet_health' not in st.session_state:
-    st.session_state.pet_health = 100 
-
-if 'mostra_ruota_auto' not in st.session_state:
-    st.session_state.mostra_ruota_auto = True
-
-# --- 2. BARRA LATERALE: ACCOUNT, WALLET, ABBONAMENTI & ADMIN ---
-st.sidebar.markdown("### 🔐 AuraSync Security Hub")
-
-if st.session_state.utente_corrente is None:
-    azione_acc = st.sidebar.radio("Accesso:", ["Accedi (Login)", "Crea Nuovo Account"])
+# --- BARRA LATERALE ---
+with st.sidebar:
+    st.title("✨ AuraSync PWA")
     
-    if azione_acc == "Crea Nuovo Account":
-        st.sidebar.subheader("Registrazione PWA")
-        u_reg = st.sidebar.text_input("Scegli Username")
-        p_reg = st.sidebar.text_input("Scegli Password", type="password")
-        eta_reg = st.sidebar.number_input("Età", min_value=1, max_value=120, value=25)
-        if st.sidebar.button("Registrati Ora"):
-            if u_reg and p_reg:
-                if u_reg in st.session_state.utenti_registrati:
-                    st.sidebar.error("Username già in uso!")
-                else:
-                    st.session_state.utenti_registrati[u_reg] = {"pass": p_reg, "eta": eta_reg}
-                    st.sidebar.success("Account creato con successo! Fai il login.")
-            else:
-                st.sidebar.warning("Compila tutti i campi.")
+    if not st.session_state.authenticated:
+        st.subheader("🔐 Security Hub")
+        user = st.text_input("Username")
+        if st.button("Accedi"):
+            if user:
+                st.session_state.authenticated = True
+                st.session_state.username = user
+                st.rerun()
     else:
-        st.sidebar.subheader("Login Utente")
-        u_log = st.sidebar.text_input("Username")
-        p_log = st.sidebar.text_input("Password", type="password")
-        if st.sidebar.button("Entra"):
-            db_user = st.session_state.utenti_registrati.get(u_log)
-            pass_valida = False
-            eta_utente = 25
-            
-            if isinstance(db_user, dict) and db_user.get("pass") == p_log:
-                pass_valida = True
-                eta_utente = db_user.get("eta", 25)
-            elif u_log == "admin_principale" and p_log == "TuaPasswordAdminSegreta123":
-                pass_valida = True
-                eta_utente = 30
-                
-            if pass_valida:
-                st.session_state.utente_corrente = u_log
-                st.session_state.utente_eta = eta_utente
-                st.session_state.mostra_ruota_auto = True
-                st.rerun()
-            else:
-                st.sidebar.error("Credenziali non valide!")
-else:
-    st.sidebar.success(f"Benvenuto, **{st.session_state.utente_corrente}**!")
-    st.sidebar.markdown(f"🪙 **Oro:** {st.session_state.wallet_oro} | 💎 **Platino:** {st.session_state.wallet_platino}")
-    st.sidebar.markdown(f"🔥 **Streak:** {st.session_state.streak_giorni} giorni | 🐾 **Pet Health:** {st.session_state.pet_health}%")
-    
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 💳 Abbonamenti & Store Stripe")
-    st.sidebar.markdown("[🪙 Acquista Gettoni](https://buy.stripe.com/tuo_link_gettoni)")
-    st.sidebar.markdown("[⭐ Abbonamento Full Access (49€)](https://buy.stripe.com/tuo_link_abbonamento)")
-    st.sidebar.markdown("[🚀 Licenza Master Branch (100€)](https://buy.stripe.com/tuo_link_100_euro)")
-    st.sidebar.markdown("---")
-    
-    if st.sidebar.button("🚪 Logout"):
-        st.session_state.utente_corrente = None
-        st.session_state.mostra_ruota_auto = True
-        st.rerun()
-
-SEI_ADMIN = (st.session_state.utente_corrente == "admin_principale")
-ETA_UTENTE = st.session_state.get('utente_eta', 25)
-IS_MAGGIORENNE = (SEI_ADMIN or ETA_UTENTE >= 18)
-
-if SEI_ADMIN:
-    st.sidebar.info("👑 **Modalità Admin Suprema:** Risorse illimitate e sbloccate.")
-
-# --- 3. INTESTAZIONE CON BOTTONE SOS ---
-col_head1, col_head2 = st.columns([4, 1])
-
-with col_head1:
-    st.title("🚀 AuraSync - Cognitive Operating System")
-
-with col_head2:
-    st.markdown("<br>", unsafe_allow_html=True) 
-    if st.button("🚨 AURA SOS", type="primary", use_container_width=True):
-        st.error("⚡ **EMERGENZA ATTIVATA!** Protocollo di crisi avviato in background.")
-
-st.write("Piattaforma SaaS PWA globale. Esplora liberamente i moduli specialistici e i tool di intelligenza artificiale.")
-
-# --- 4. VERA RUOTA DELLA FORTUNA GRAFICA (HTML/JS INTERATTIVA) ---
-if st.session_state.mostra_ruota_auto:
-    st.markdown("---")
-    col_rw1, col_rw2 = st.columns([3, 1])
-    with col_rw1:
-        st.warning("🎁 **Bonus Benvenuto Rilevato!** Gira la ruota interattiva qui sotto per vincere i tuoi gettoni gratuiti.")
-    with col_rw2:
-        if st.button("❌ Chiudi Finestra Ruota", use_container_width=True):
-            st.session_state.mostra_ruota_auto = False
+        st.success(f"Utente: **{st.session_state.username}**")
+        st.metric("Gettoni", f"{st.session_state.wallet_tokens} 🪙")
+        st.metric("Azioni FUP", f"{st.session_state.daily_actions_left} ⚡")
+        if st.button("Logout"):
+            st.session_state.authenticated = False
+            st.session_state.tutorial_completed = False
+            st.session_state.wheel_spun_today = False
             st.rerun()
 
-    # Componente HTML personalizzato con la ruota grafica rotante
-    ruota_html = """
-    <div style="text-align: center; font-family: sans-serif;">
-        <div style="position: relative; display: inline-block;">
-            <canvas id="wheel" width="300" height="300" style="border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></canvas>
-            <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid #ff4b4b;"></div>
-        </div>
-        <br><br>
-        <button onclick="spinWheel()" id="spinBtn" style="background-color: #ff4b4b; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">🎡 Gira la Ruota Grafica!</button>
-        <p id="resultText" style="margin-top: 15px; font-size: 18px; font-weight: bold; color: #31333F;"></p>
-    </div>
+    st.divider()
+    selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard & Onboarding"] + list(AURASYNC_CATALOG.keys()))
 
-    <script>
-        const sectors = [
-            {color: "#FF5733", text: "+1 Oro"},
-            {color: "#33FF57", text: "+5 Oro"},
-            {color: "#3357FF", text: "+2 Oro"},
-            {color: "#F3FF33", text: "+3 Oro"},
-            {color: "#FF33F3", text: "+10 Oro"},
-            {color: "#33FFF6", text: "+2 Platino"}
-        ];
+# --- FLUSSO AUTOMATICO: 1. TUTORIAL (120s) -> 2. RUOTA DELLA FORTUNA ---
 
-        const canvas = document.getElementById("wheel");
-        const ctx = canvas.getContext("2d");
-        const numSectors = sectors.length;
-        const arc = Math.PI / (numSectors / 2);
-        let startAngle = 0;
-        let outsideRadius = 140;
-        let textRadius = 90;
-        let insideRadius = 20;
-
-        function drawSector(sector, i) {
-            let angle = startAngle + i * arc;
-            ctx.fillStyle = sector.color;
-            ctx.beginPath();
-            ctx.arc(150, 150, outsideRadius, angle, angle + arc, false);
-            ctx.arc(150, 150, insideRadius, angle + arc, angle, true);
-            ctx.stroke();
-            ctx.fill();
-
-            ctx.save();
-            ctx.shadowOffsetX = -1;
-            ctx.shadowOffsetY = -1;
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = "white";
-            ctx.translate(150 + Math.cos(angle + arc / 2) * textRadius, 150 + Math.sin(angle + arc / 2) * textRadius);
-            ctx.rotate(angle + arc / 2 + Math.PI / 2);
-            ctx.font = "bold 14px sans-serif";
-            ctx.fillText(sector.text, -ctx.measureText(sector.text).width / 2, 0);
-            ctx.restore();
-        }
-
-        function drawWheel() {
-            ctx.clearRect(0,0,300,300);
-            for(let i = 0; i < numSectors; i++) {
-                drawSector(sectors[i], i);
-            }
-        }
-
-        let spinAngleStart = 0;
-        let spinTime = 0;
-        let spinTimeTotal = 0;
-
-        function spinWheel() {
-            spinAngleStart = Math.random() * 10 + 10;
-            spinTime = 0;
-            spinTimeTotal = Math.random() * 3000 + 4000;
-            rotateWheel();
-            document.getElementById("spinBtn").disabled = true;
-        }
-
-        function rotateWheel() {
-            spinTime += 30;
-            if(spinTime >= spinTimeTotal) {
-                stopRotateWheel();
-                return;
-            }
-            let spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
-            startAngle += (spinAngle * Math.PI / 180);
-            drawWheel();
-            setTimeout(rotateWheel, 30);
-        }
-
-        function stopRotateWheel() {
-            let degrees = startAngle * 180 / Math.PI + 90;
-            let arcd = arc * 180 / Math.PI;
-            let index = Math.floor((360 - degrees % 360) / arcd);
-            ctx.save();
-            let winningText = sectors[index % numSectors].text;
-            document.getElementById("resultText").innerHTML = "🎉 Hai vinto: " + winningText + "!";
-            document.getElementById("spinBtn").disabled = false;
-            ctx.restore();
-        }
-
-        function easeOut(t, b, c, d) {
-            let ts = (t/=d)*t;
-            let tc = ts*t;
-            return b+c*(tc + -3*ts + 3*t);
-        }
-
-        drawWheel();
-    </script>
-    """
-    components.html(ruota_html, height=420)
-    st.markdown("---")
-
-st.subheader("🗂️ Indice Generale delle Opzioni (In ordine alfabetico)")
-
-# Gestione navigazione moduli
-if 'modulo_attivo' not in st.session_state:
-    st.session_state.modulo_attivo = "Home"
-
-if st.session_state.modulo_attivo == "Home":
-    c1, c2, c3 = st.columns(3)
-    
-    with c1:
-        st.markdown("### 🤖 AuraBot & Modelli IA")
-        st.write("Libreria completa di Branch IA e Trend globali.")
-        if st.button("Apri AuraBot & Modelli"):
-            st.session_state.modulo_attivo = "ModelliIA"
+if st.session_state.authenticated:
+    # STEP 1: Tutorial Iniziale obbligatorio (120 secondi con finale 3 gettoni omaggio)
+    if not st.session_state.tutorial_completed:
+        st.info("🎓 **Benvenuto in AuraSync! Completa il tutorial rapido (120s) per sbloccare la piattaforma e ricevere 3 Gettoni d'Oro omaggio!**")
+        
+        st.markdown("""
+        > **Cosa scoprirai in questo tutorial:**
+        > 1. Come navigare tra le 125 mini-applicazioni specializzate.
+        > 2. Come funziona la Token Economy e la Fair Use Policy (FUP).
+        > 3. Come interagire con la community globale e mantenere in salute il tuo pet digitale.
+        """)
+        
+        if st.button("✅ Ho completato il tutorial (Simula 120 secondi)", type="primary"):
+            st.session_state.tutorial_completed = True
+            st.session_state.wallet_tokens += 3  # 3 gettoni omaggio di fine tutorial
+            st.balloons()
+            st.success("🎉 Tutorial completato! Hai ricevuto **3 Gettoni d'Oro omaggio**!")
             st.rerun()
             
-        st.markdown("### 🌿 AuraGreen & Botanica")
-        st.write("Pollice verde digitale e diagnosi piante.")
-        if st.button("Apri AuraGreen"):
-            st.session_state.modulo_attivo = "AuraGreen"
+        st.stop interrompe l'esecuzione finché il tutorial non è completato
+        st.stop()
+
+    # STEP 2: Ruota della Fortuna (si apre solo dopo il tutorial)
+    elif not st.session_state.wheel_spun_today:
+        st.info("🎁 **Bonus Giornaliero: Gira la Ruota della Fortuna!**")
+        if st.button("🎡 Gira la Ruota", type="primary"):
+            won = random.choice([1, 2, 3, 5, 10])
+            st.session_state.wallet_tokens += won
+            st.session_state.wheel_spun_today = True
+            st.balloons()
+            st.success(f"Hai vinto altri {won} Gettoni d'Oro!")
             st.rerun()
+        st.stop()
 
-        st.markdown("### 👨‍👩‍👧‍👦 AuraKids & Paws (0-18)")
-        st.write("Nutrizione, svezzamento e supporto emotivo.")
-        if st.button("Apri AuraKids"):
-            st.session_state.modulo_attivo = "AuraKids"
-            st.rerun()
-
-    with c2:
-        st.markdown("### 🛠️ AuraFix & Meccanica")
-        st.write("Guide di riparazione fai-da-te.")
-        if st.button("Apri AuraFix"):
-            st.session_state.modulo_attivo = "AuraFix"
-            st.rerun()
-
-        st.markdown("### 🐾 AuraPets & Paws")
-        st.write("Companion empatico per animali domestici.")
-        if st.button("Apri AuraPets"):
-            st.session_state.modulo_attivo = "AuraPets"
-            st.rerun()
-
-        if IS_MAGGIORENNE:
-            st.markdown("### 💬 AuraMatch (Incontri 18+)")
-            st.write("Matchmaking basato su compatibilità neurale.")
-            if st.button("Apri AuraMatch"):
-                st.session_state.modulo_attivo = "AuraMatch"
-                st.rerun()
-
-    with c3:
-        st.markdown("### 🚨 AuraTwin & Extra")
-        st.write("Aura Twin, Capsula del tempo e favole.")
-        if st.button("Apri Funzioni Extra"):
-            st.session_state.modulo_attivo = "Extra"
-            st.rerun()
-
-        if IS_MAGGIORENNE:
-            st.markdown("### 🎰 AuraSlots (Mini-Casinò 18+)")
-            st.write("Arcade virtuale con micro-puntate.")
-            if st.button("Apri AuraSlots"):
-                st.session_state.modulo_attivo = "AuraSlots"
-                st.rerun()
-
-        st.markdown("### 💎 Token Economy & Store")
-        st.write("Gestione wallet e abbonamenti Stripe.")
-        if st.button("Apri Wallet & Store"):
-            st.session_state.modulo_attivo = "WalletStore"
-            st.rerun()
-
+# --- CORPO PRINCIPALE ---
+if selected_area == "🏠 Dashboard & Onboarding":
+    st.subheader("Benvenuto nella Dashboard Centrale di AuraSync")
+    st.write("Tutti i sistemi sono attivi. Scegli un'area dal menu laterale per esplorare le 125 mini-applicazioni.")
 else:
-    if st.button("⬅️ Torna alla Home Principale"):
-        st.session_state.modulo_attivo = "Home"
-        st.rerun()
-    st.markdown("---")
-
-    # Routing dei moduli
-    if st.session_state.modulo_attivo == "ModelliIA":
-        st.header("🤖 Libreria Modelli Branch IA & Trend Globali")
-        st.write("Seleziona le categorie dalla libreria avanzata.")
-    elif st.session_state.modulo_attivo == "AuraGreen":
-        st.header("🌿 AuraGreen & Botanica Digitale")
-        st.file_uploader("Carica foto pianta", type=["jpg", "png", "jpeg"])
-    elif st.session_state.modulo_attivo == "AuraKids":
-        st.header("👨‍👩‍👧‍👦 AuraKids & Paws (Fascia 0-18 Anni)")
-        st.slider("Fascia d'età:", 0, 18, 5)
-    elif st.session_state.modulo_attivo == "AuraFix":
-        st.header("🛠️ AuraFix & Meccanica Pratica")
-        st.text_input("Cosa devi riparare?")
-    elif st.session_state.modulo_attivo == "AuraPets":
-        st.header("🐾 AuraPets & Paws")
-        st.selectbox("Animale:", ["Cane", "Gatto", "Altro"])
-    elif st.session_state.modulo_attivo == "AuraMatch" and IS_MAGGIORENNE:
-        st.header("💬 AuraMatch (18+)")
-    elif st.session_state.modulo_attivo == "Extra":
-        st.header("🚨 Funzioni Extra")
-    elif st.session_state.modulo_attivo == "AuraSlots" and IS_MAGGIORENNE:
-        st.header("🎰 AuraSlots (18+)")
-    elif st.session_state.modulo_attivo == "WalletStore":
-        st.header("💎 Token Economy & Store")
-        st.write(f"Oro: {st.session_state.wallet_oro} | Platino: {st.session_state.wallet_platino}")
+    st.subheader(selected_area)
+    apps_in_area = AURASYNC_CATALOG[selected_area]
+    chosen_app = st.selectbox("Seleziona la Mini-Applicazione:", apps_in_area)
+    st.info(f"Hai selezionato: **{chosen_app}**. Modulo pronto per l'esecuzione.")
