@@ -6,19 +6,18 @@ st.set_page_config(
     page_title="AuraSync - Cognitive Operating System",
     page_icon="✨",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"  # Nascosto/Estraibile di default
 )
 
 # Inizializzazione dello State globale
 if "authenticated" not in st.session_state: st.session_state.authenticated = False
 if "username" not in st.session_state: st.session_state.username = ""
 if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
-if "pet_health" not in st.session_state: st.session_state.pet_health = 100
 if "tutorial_completed" not in st.session_state: st.session_state.tutorial_completed = False
 if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today = False
 if "daily_actions_left" not in st.session_state: st.session_state.daily_actions_left = 5
 
-# CATALOGO CENTRALE DELLE 125 APPLICAZIONI DI AURASYNC
+# CATALOGO COMPLETO DELLE 150 APPLICAZIONI (125 ORIGINALI + 25 GIOCHI E QUIZ)
 AURASYNC_CATALOG = {
     "🧠 Area 1: Core IA & Produttività": [
         "1. AuraBot Universal Chat", "2. Branch Selector IA", "3. Voice & Persona Chameleon",
@@ -88,63 +87,66 @@ AURASYNC_CATALOG = {
         "121. AuraFeed Community Wall", "122. Creator Hall of Fame & Leaderboard",
         "123. Public Prompt & Template Market", "124. Safe Community Moderation Guard",
         "125. Collaborative Story & Song Jam"
+    ],
+    "🎮 Area 11: 25 Giochi e Quiz per Tutti": [
+        "Game 1. Quiz di Cultura Generale IA", "Game 2. Rompicapo Logico Matematico",
+        "Game 3. Indovina la Parola Segreta", "Game 4. Memory Test Cognitivo",
+        "Game 5. Test di Intuito e Psicologia", "Game 6. Trivia su Cinema e Serie TV",
+        "Game 7. Calcolatore di Compatibilità Zodiacale", "Game 8. Indovinelli Storici",
+        "Game 9. Test di Velocità di Reazione", "Game 10. Labirinto Testuale Decisionale",
+        "Game 11. Quiz di Geografia Mondiale", "Game 12. Indovina il Brand o il Logo",
+        "Game 13. Sfida di Calcolo Mentale Rapido", "Game 14. Quiz sui Misteri dello Spazio",
+        "Game 15. Test del QI Lirico e Musicale", "Game 16. Trova l'Intruso Logico",
+        "Game 17. Quiz sulla Tecnologia del Futuro", "Game 18. Indovina la Curiosità Biologica",
+        "Game 19. Sfida di Riddle ed Enigmi", "Game 20. Test di Creatività Espressiva",
+        "Game 21. Quiz sulle Lingue del Mondo", "Game 22. Gioco della Torre di Hanoi IA",
+        "Game 23. Test di Sopravvivenza in Natura", "Game 24. Quiz sull'Economia e Finanza Base",
+        "Game 25. Il Grande Quiz Finale di AuraSync"
     ]
 }
 
-# --- BARRA LATERALE ---
+# --- BARRA LATERALE (Nascosta/Estraibile) ---
 with st.sidebar:
-    st.title("✨ AuraSync PWA")
+    st.title("✨ Menu AuraSync")
     
     if st.session_state.authenticated:
         st.success(f"Utente: **{st.session_state.username}**")
         st.metric("Gettoni", f"{st.session_state.wallet_tokens} 🪙")
         st.metric("Azioni FUP", f"{st.session_state.daily_actions_left} ⚡")
-        if st.button("Logout"):
+        if st.button("Disconnetti / Reset"):
             st.session_state.authenticated = False
             st.session_state.tutorial_completed = False
             st.session_state.wheel_spun_today = False
             st.rerun()
         st.divider()
-        selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard Centrale"] + list(AURASYNC_CATALOG.keys()))
+        selected_area = st.radio("Seleziona Area e Moduli:", ["🌐 Bacheca Pubblica"] + list(AURASYNC_CATALOG.keys()))
     else:
-        st.info("ℹ️ Completa il tutorial di benvenuto per sbloccare l'accesso.")
-        selected_area = "🏠 Dashboard Centrale"
+        st.info("ℹ️ Completa il percorso iniziale per sbloccare la Bacheca e le 150 applicazioni.")
+        selected_area = "🌐 Bacheca Pubblica"
 
-# --- FLUSSO PRE-LOGIN: TUTORIAL SCRITTO MIRATO ---
+# --- FLUSSO SEQUENZIALE PRINCIPALE ---
 
 if not st.session_state.tutorial_completed:
+    # 1. TUTORIAL INIZIALE
     st.title("📘 Guida Ufficiale ad AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
-    st.write("Leggi la guida qui sotto per comprendere l'architettura della piattaforma, il funzionamento dei moduli e la gestione dei Gettoni d'Oro.")
+    st.write("Leggi la guida rapida per comprendere l'architettura della piattaforma, la token economy e sbloccare subito i tuoi vantaggi.")
 
     st.divider()
 
     col1, col2 = st.columns(2)
-
     with col1:
         st.markdown("""
         #### 🎯 1. Architettura e Moduli
-        * **Piattaforma Multidisciplinare:** AuraSync organizza gli strumenti in 10 macro-aree specializzate (Produttività IA, Business, Design, Data Science, Benessere e Community).
-        * **Esecuzione su Misura:** Ogni strumento è progettato per risolvere un'esigenza specifica: dalla generazione di codice e modelli finanziari, alla pianificazione strategica e all'analisi dati.
-        * **Sincronizzazione Cloud:** I dati e i progressi personali vengono conservati nel tuo profilo utente in modo sicuro.
+        * **150 Applicazioni e Giochi:** Un ecosistema completo diviso in 11 aree tematiche (dall'IA alla produttività, fino ai 25 giochi e quiz per tutti).
+        * **Strumenti su Misura:** Moduli avanzati per business, creatività, analisi dati e intrattenimento cognitivo.
         """)
-
     with col2:
         st.markdown("""
-        #### 🪙 2. Economia dei Gettoni e Limiti (FUP)
-        * **Crediti Iniziali:** Completando questa lettura otterrai subito **3 Gettoni d'Oro omaggio** per testare le funzionalità.
-        * **Bonus Giornalieri:** Ogni giorno potrai girare la Ruota della Fortuna per riscattare gettoni extra.
-        * **Fair Use Policy (FUP):** Ogni utente dispone di un limite di azioni giornaliere per garantire prestazioni ottimali su tutti i moduli.
+        #### 🪙 2. Economia dei Gettoni
+        * **Bonus Immediato:** Ottieni subito **3 Gettoni d'Oro** completando questa lettura.
+        * **Ruota Bonus:** Subito dopo potrai girare la Ruota della Fortuna per vincere crediti extra prima di entrare nella Bacheca Pubblica.
         """)
-
-    st.divider()
-
-    st.markdown("""
-    #### 🚀 3. Come Iniziare
-    1. Conferma la lettura con il pulsante qui sotto per accreditare i primi 3 Gettoni.
-    2. Gira la Ruota della Fortuna per scoprire il tuo bonus giornaliero.
-    3. Inserisci il tuo username nella schermata di accesso e seleziona il modulo operativo desiderato dalla barra laterale.
-    """)
 
     st.divider()
 
@@ -152,48 +154,44 @@ if not st.session_state.tutorial_completed:
         st.session_state.tutorial_completed = True
         st.session_state.wallet_tokens += 3
         st.balloons()
-        st.success("🎉 Guida completata! 3 Gettoni d'Oro sono stati aggiunti al tuo portafoglio.")
+        st.success("🎉 Guida completata! 3 Gettoni d'Oro accreditati.")
         st.rerun()
 
 elif not st.session_state.wheel_spun_today:
-    # FASE 2: Ruota della Fortuna
+    # 2. RUOTA DELLA FORTUNA
     st.title("🎡 Ruota della Fortuna Bonus")
-    st.info("Guida completata con successo! Gira la ruota per vincere gettoni aggiuntivi prima di effettuare l'accesso.")
+    st.info("Il tutorial è completato! Gira la ruota per accumulare gettoni extra prima di accedere alla Bacheca Pubblica.")
     
     if st.button("🎁 Gira la Ruota Ora!", type="primary"):
         won = random.choice([1, 2, 3, 5, 10])
         st.session_state.wallet_tokens += won
         st.session_state.wheel_spun_today = True
         st.balloons()
-        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Saldo attuale: {st.session_state.wallet_tokens} 🪙)")
+        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Saldo totale: {st.session_state.wallet_tokens} 🪙)")
         st.rerun()
 
-elif not st.session_state.authenticated:
-    # FASE 3: Schermata di Login finale
-    st.title("🔐 Accesso a AuraSync OS")
-    st.success(f"Saldo iniziale disponibile: **{st.session_state.wallet_tokens} Gettoni d'Oro**.")
-    st.write("Inserisci il tuo nome utente per accedere alla dashboard e iniziare a utilizzare gli strumenti della piattaforma.")
-    
-    with st.form("login_form"):
-        username_input = st.text_input("Username Utente:")
-        submit_login = st.form_submit_button("Accedi alla Piattaforma 🚀", type="primary")
-        
-        if submit_login:
-            if username_input.strip():
-                st.session_state.authenticated = True
-                st.session_state.username = username_input.strip()
-                st.rerun()
-            else:
-                st.error("Inserisci un username valido per continuare.")
-
 else:
-    # FASE 4: Dashboard Piattaforma
-    if selected_area == "🏠 Dashboard Centrale":
-        st.subheader(f"Sessione Attiva: **{st.session_state.username}** 🌟")
-        st.write("Tutti i sistemi sono operativi. Seleziona un'area strategica dal menu laterale per accedere ai relativi moduli di lavoro.")
-        st.metric("Saldo Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+    # 3. ACCESSO ALLA BACHECA PUBBLICA (E PIATTAFORMA SBLOCCATA)
+    st.session_state.authenticated = True  # Auto-login sbloccato dopo la ruota
+
+    if selected_area == "🌐 Bacheca Pubblica":
+        st.title("🌐 Bacheca Pubblica AuraSync")
+        st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
+        st.write("Qui puoi visualizzare i contenuti condivisi, interagire con gli altri utenti e verificare i gettoni a tua disposizione.")
+        
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+        with col_m2:
+            st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+
+        st.divider()
+        st.subheader("📢 Ultime Notizie dalla Community")
+        st.info("• Aggiornamento v3.2 attivo: Aggiunti 25 nuovi giochi e quiz interattivi nell'Area 11!\n• Bacheca pubblica sincronizzata correttamente in modalità cloud PWA.")
+        
+        st.write("👉 *Usa il menu a scomparsa in alto a sinistra (tramite la freccia o la barra laterale) per esplorare tutte le 150 applicazioni e i giochi.*")
     else:
         st.subheader(selected_area)
         apps_in_area = AURASYNC_CATALOG[selected_area]
-        chosen_app = st.selectbox("Seleziona il modulo operativo:", apps_in_area)
-        st.info(f"Modulo selezionato: **{chosen_app}**. Pronto per l'esecuzione.")
+        chosen_app = st.selectbox("Seleziona il modulo o il gioco desiderato:", apps_in_area)
+        st.info(f"Hai selezionato: **{chosen_app}**. Ambiente operativo pronto e sincronizzato.")
