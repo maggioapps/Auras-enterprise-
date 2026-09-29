@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import os
 
 # Configurazione PWA
 st.set_page_config(
@@ -111,44 +110,29 @@ with st.sidebar:
         st.info("ℹ️ Segui il video tutorial e ascolta la voce guida prima di accedere.")
         selected_area = "🏠 Dashboard Centrale"
 
-# --- FLUSSO PRE-LOGIN: 1. VIDEO E VOCE NARRANTE -> 2. RUOTA -> 3. LOGIN ---
+# --- FLUSSO PRE-LOGIN: 1. VIDEO TUTORIAL & VOCE -> 2. RUOTA -> 3. LOGIN ---
 
 if not st.session_state.tutorial_completed:
-    st.title("🎬 Video Tutorial Ufficiale (120 Secondi)")
-    st.warning("🎧 **Ascolta la voce guida e guarda la videodimostrazione** per sbloccare subito **3 Gettoni d'Oro omaggio**!")
+    st.title("🎬 Video Tutorial Ufficiale (Mappatura 125 App)")
+    st.warning("🎥 **Guida interattiva:** Ascolta la voce guida e guarda il video dimostrativo per sbloccare subito **3 Gettoni d'Oro omaggio**!")
 
-    # Generazione automatica dell'audio con voce italiana tramite gTTS (se disponibile) o riproduttore nativo browser
-    try:
-        from gtts import gTTS
-        tts_text = (
-            "Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. "
-            "Abbiamo mappato ben centoventicinque mini-applicazioni divise in dieci aree spettacolari! "
-            "Vuoi chattare con un'intelligenza artificiale, analizzare le piante, scrivere script virali, "
-            "gestire il tuo budget o il tuo business? C'è un'app per tutto, dalla A alla Z. "
-            "Segui la guida, gira la ruota della fortuna e preparati a esplorare il futuro!"
-        )
-        tts = gTTS(text=tts_text, lang='it', slow=False)
-        audio_path = "tutorial_voice.mp3"
-        tts.save(audio_path)
-        st.audio(audio_path, format="audio/mp3", autoplay=True)
-    except Exception:
-        # Fallback se gTTS non è installato nell'ambiente Cloud di Streamlit
-        st.info("💡 **Voce Guida (Sintesi Vocale attiva):** 'Benvenuto in AuraSync! Guarda la videoguida e scopri tutte le 125 mini-app.'")
-
-    # Box grafico con la trascrizione della voce narrante
+    # Box multimediale con voce guida integrata
     st.markdown("""
-        <div style="padding: 20px; background: rgba(255, 75, 75, 0.08); border-radius: 12px; border: 1px solid rgba(255, 75, 75, 0.2); margin-bottom: 20px;">
-            <p style="font-size: 1.1em; color: #ff4b4b; font-weight: bold; margin-bottom: 5px;">🎙️ Trascrizione Vocale Ufficiale:</p>
-            <p style="font-style: italic; color: #e0e0e0;">
-            "Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. 
-            Abbiamo mappato ben 125 mini-applicazioni divise in 10 aree spaventose! Vuoi chattare con un'IA, analizzare le piante, 
-            scrivere script virali, calcolare il tuo budget o gestire il tuo business? C'è un'app per tutto, dalla A alla Z."
+        <div style="padding: 20px; background: rgba(0, 200, 255, 0.08); border-radius: 12px; border: 1px solid rgba(0, 200, 255, 0.2); margin-bottom: 20px;">
+            <p style="font-size: 1.1em; color: #00bcd4; font-weight: bold; margin-bottom: 8px;">🎧 Voce Guida Femminile Ufficiale:</p>
+            <audio controls style="width: 100%;">
+              <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+              Il tuo browser non supporta l'elemento audio.
+            </audio>
+            <p style="font-style: italic; color: #e0e0e0; margin-top: 10px;">
+            "Benvenuta in AuraSync! Ti guiderò attraverso la mappatura completa delle nostre 125 mini-applicazioni cognitive, 
+            suddivise in 10 aree strategiche. Guarda il video qui sotto per scoprire come sfruttare al massimo ogni funzione."
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Nota sul video: Per avere un video reale di 120 secondi con audio integrato, puoi caricare il tuo file .mp4 nella cartella del progetto GitHub e sostituire il link sotto con il nome del file (es. st.video("tuo_video.mp4"))
-    st.video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4")
+    # Video dimostrativo esteso (durata ampia)
+    st.video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4")
 
     st.markdown("""
     ### 🗺️ Le 10 Aree Principali Illustrate:
@@ -157,7 +141,7 @@ if not st.session_state.tutorial_completed:
     * **Area 7-10:** Data Science, Life Coaching, Teen Empowerment e Community Wall.
     """)
     
-    if st.button("✅ Ho completato l'ascolto e la visione (Ricevi 3 Gettoni)", type="primary"):
+    if st.button("✅ Ho completato la visione e l'ascolto (Ricevi 3 Gettoni)", type="primary"):
         st.session_state.tutorial_completed = True
         st.session_state.wallet_tokens += 3
         st.balloons()
@@ -180,7 +164,7 @@ elif not st.session_state.wheel_spun_today:
 elif not st.session_state.authenticated:
     # FASE 3: Schermata di Login finale
     st.title("🔐 Accesso a AuraSync PWA")
-    st.success(f"Ottimo! Hai completato il tutorial vocale e la ruota. Possiedi **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
+    st.success(f"Ottimo! Hai completato il tutorial e la ruota. Possiedi **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
     st.write("Inserisci il tuo username per entrare nella dashboard e sbloccare tutte le 125 mini-applicazioni.")
     
     with st.form("login_form"):
