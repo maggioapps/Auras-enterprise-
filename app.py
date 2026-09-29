@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import os
 
 # Configurazione PWA
 st.set_page_config(
@@ -107,49 +108,66 @@ with st.sidebar:
         st.divider()
         selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard Centrale"] + list(AURASYNC_CATALOG.keys()))
     else:
-        st.info("ℹ️ Guarda il video tutorial e gira la ruota al centro dello schermo prima di accedere.")
+        st.info("ℹ️ Segui il video tutorial e ascolta la voce guida prima di accedere.")
         selected_area = "🏠 Dashboard Centrale"
 
-# --- FLUSSO PRE-LOGIN: 1. VIDEO TUTORIAL (120s) -> 2. RUOTA -> 3. LOGIN ---
+# --- FLUSSO PRE-LOGIN: 1. VIDEO E VOCE NARRANTE -> 2. RUOTA -> 3. LOGIN ---
 
 if not st.session_state.tutorial_completed:
     st.title("🎬 Video Tutorial Ufficiale (120 Secondi)")
-    st.warning("🎥 **Guida interattiva con voce narrante femminile:** Scopri la mappatura completa delle 125 mini-app e ricevi subito **3 Gettoni d'Oro omaggio**!")
+    st.warning("🎧 **Ascolta la voce guida e guarda la videodimostrazione** per sbloccare subito **3 Gettoni d'Oro omaggio**!")
 
-    # Box con la trascrizione della voce guida accattivante ed energica
+    # Generazione automatica dell'audio con voce italiana tramite gTTS (se disponibile) o riproduttore nativo browser
+    try:
+        from gtts import gTTS
+        tts_text = (
+            "Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. "
+            "Abbiamo mappato ben centoventicinque mini-applicazioni divise in dieci aree spettacolari! "
+            "Vuoi chattare con un'intelligenza artificiale, analizzare le piante, scrivere script virali, "
+            "gestire il tuo budget o il tuo business? C'è un'app per tutto, dalla A alla Z. "
+            "Segui la guida, gira la ruota della fortuna e preparati a esplorare il futuro!"
+        )
+        tts = gTTS(text=tts_text, lang='it', slow=False)
+        audio_path = "tutorial_voice.mp3"
+        tts.save(audio_path)
+        st.audio(audio_path, format="audio/mp3", autoplay=True)
+    except Exception:
+        # Fallback se gTTS non è installato nell'ambiente Cloud di Streamlit
+        st.info("💡 **Voce Guida (Sintesi Vocale attiva):** 'Benvenuto in AuraSync! Guarda la videoguida e scopri tutte le 125 mini-app.'")
+
+    # Box grafico con la trascrizione della voce narrante
     st.markdown("""
         <div style="padding: 20px; background: rgba(255, 75, 75, 0.08); border-radius: 12px; border: 1px solid rgba(255, 75, 75, 0.2); margin-bottom: 20px;">
-            <p style="font-size: 1.1em; color: #ff4b4b; font-weight: bold; margin-bottom: 5px;">🎧 Voce Guida Femminile:</p>
+            <p style="font-size: 1.1em; color: #ff4b4b; font-weight: bold; margin-bottom: 5px;">🎙️ Trascrizione Vocale Ufficiale:</p>
             <p style="font-style: italic; color: #e0e0e0;">
             "Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. 
             Abbiamo mappato ben 125 mini-applicazioni divise in 10 aree spaventose! Vuoi chattare con un'IA, analizzare le piante, 
-            scrivere script virali, calcolare il tuo budget o gestire il tuo business? C'è un'app per tutto, dalla A alla Z. 
-            Guarda il video qui sotto per scoprire ogni segreto!"
+            scrivere script virali, calcolare il tuo budget o gestire il tuo business? C'è un'app per tutto, dalla A alla Z."
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Riproduttore video (puoi sostituire il link con il file MP4 del tuo video tutorial)
-    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
+    # Nota sul video: Per avere un video reale di 120 secondi con audio integrato, puoi caricare il tuo file .mp4 nella cartella del progetto GitHub e sostituire il link sotto con il nome del file (es. st.video("tuo_video.mp4"))
+    st.video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4")
 
     st.markdown("""
-    ### 🗺️ Le 10 Aree Principali Spiegate nel Video:
+    ### 🗺️ Le 10 Aree Principali Illustrate:
     * **Area 1-3:** IA & Produttività, Benessere & Fai-da-te, Famiglia & Musica.
     * **Area 4-6:** Store/Wallet, Business & Growth, Design & UI/UX.
     * **Area 7-10:** Data Science, Life Coaching, Teen Empowerment e Community Wall.
     """)
     
-    if st.button("✅ Ho completato i 120 secondi di tutorial (Ricevi 3 Gettoni)", type="primary"):
+    if st.button("✅ Ho completato l'ascolto e la visione (Ricevi 3 Gettoni)", type="primary"):
         st.session_state.tutorial_completed = True
         st.session_state.wallet_tokens += 3
         st.balloons()
-        st.success("🎉 Ottimo! Tutorial completato. 3 Gettoni d'Oro accreditati nel tuo wallet.")
+        st.success("🎉 Fantastico! Tutorial completato. 3 Gettoni d'Oro accreditati.")
         st.rerun()
 
 elif not st.session_state.wheel_spun_today:
     # FASE 2: Ruota della Fortuna
     st.title("🎡 Ruota della Fortuna Bonus")
-    st.info("Il tutorial è completato! Ora gira la ruota per vincere gettoni extra prima di effettuare il login.")
+    st.info("Il tutorial è completato! Gira la ruota per vincere gettoni extra prima di effettuare il login.")
     
     if st.button("🎁 Gira la Ruota Ora!", type="primary"):
         won = random.choice([1, 2, 3, 5, 10])
@@ -162,8 +180,8 @@ elif not st.session_state.wheel_spun_today:
 elif not st.session_state.authenticated:
     # FASE 3: Schermata di Login finale
     st.title("🔐 Accesso a AuraSync PWA")
-    st.success(f"Fantastico! Hai completato il tutorial e la ruota. Possiedi **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
-    st.write("Inserisci il tuo username per entrare ufficialmente nella dashboard e sbloccare tutte le 125 mini-applicazioni.")
+    st.success(f"Ottimo! Hai completato il tutorial vocale e la ruota. Possiedi **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
+    st.write("Inserisci il tuo username per entrare nella dashboard e sbloccare tutte le 125 mini-applicazioni.")
     
     with st.form("login_form"):
         username_input = st.text_input("Scegli il tuo Username:")
@@ -178,7 +196,7 @@ elif not st.session_state.authenticated:
                 st.error("Inserisci un username valido per continuare.")
 
 else:
-    # FASE 4: Piattaforma pienamente sbloccata (Dashboard e catalogo 125 App)
+    # FASE 4: Piattaforma pienamente sbloccata
     if selected_area == "🏠 Dashboard Centrale":
         st.subheader(f"Bentornato, {st.session_state.username}! 🌟")
         st.write("Tutti i sistemi di AuraSync sono attivi. Scegli un'area dal menu laterale per esplorare le 125 mini-applicazioni.")
