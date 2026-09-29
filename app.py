@@ -1,20 +1,20 @@
 import streamlit as st
+import random
 
 # Configurazione della pagina
 st.set_page_config(page_title="AuraSync Enterprise", page_icon="📱", layout="wide")
 
-# Stile CSS per trasformare i pulsanti in veri "blocchi app" in stile smartphone
+# Stile CSS per i pulsanti a blocco stile smartphone
 st.markdown("""
     <style>
-    /* Stile generale per i pulsanti principali */
     div.stButton > button {
         width: 100%;
-        height: 120px;
+        height: 110px;
         background-color: #f8f9fa;
         color: #212529;
         border: 2px solid #e9ecef;
         border-radius: 20px;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
@@ -28,20 +28,22 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Inizializzazione dello stato della pagina
+# Inizializzazione dello stato
 if "pagina_attiva" not in st.session_state:
     st.session_state["pagina_attiva"] = "Home"
+if "gettoni" not in st.session_state:
+    st.session_state["gettoni"] = 5
 
 def vai_a_home():
     st.session_state["pagina_attiva"] = "Home"
 
 # ----------------- HOME / MENU PRINCIPALE (Stile Telefono) -----------------
 if st.session_state["pagina_attiva"] == "Home":
-    st.title("AuraSync Enterprise")
-    st.write("📲 **Menu Principale** - Seleziona un'applicazione:")
+    st.title("AuraSync Enterprise - Hub IA, Trend & Gamification")
+    st.write(f"🪙 **I tuoi Gettoni:** {st.session_state['gettoni']} | Scegli un'applicazione dal menu:")
     st.divider()
 
-    # Prima riga (3 app)
+    # Prima riga di app
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🎡\n\nRuota della Fortuna"):
@@ -56,9 +58,9 @@ if st.session_state["pagina_attiva"] == "Home":
             st.session_state["pagina_attiva"] = "Trend"
             st.rerun()
 
-    st.write("") # Spaziatura
+    st.write("")
 
-    # Seconda riga (3 app)
+    # Seconda riga di app
     col4, col5, col6 = st.columns(3)
     with col4:
         if st.button("🎁\n\nArea Premi"):
@@ -73,50 +75,94 @@ if st.session_state["pagina_attiva"] == "Home":
             st.session_state["pagina_attiva"] = "Profilo"
             st.rerun()
 
-# ----------------- SEZIONI INTERNE -----------------
+# ----------------- 1. RUOTA DELLA FORTUNA -----------------
 elif st.session_state["pagina_attiva"] == "Ruota":
     st.header("🎡 La Ruota della Fortuna AuraSync")
-    st.write("Gira la ruota per vincere gettoni e premi esclusivi!")
+    st.write("Gira la ruota per vincere gettoni e premi esclusivi! (Costo: 1 gettone)")
+    
+    if st.button("🔄 Gira la Ruota!"):
+        if st.session_state["gettoni"] > 0:
+            st.session_state["gettoni"] -= 1
+            vincita = random.choice([0, 1, 3, 5, 10])
+            st.session_state["gettoni"] += vincita
+            if vincita > 0:
+                st.success(f"🎉 Complimenti! Hai vinto {vincita} gettoni!")
+            else:
+                st.warning("Ops! Questa volta è andata male, riprova!")
+        else:
+            st.error("Non hai abbastanza gettoni per girare la ruota!")
+
+    st.write(f"🪙 Gettoni attuali: {st.session_state['gettoni']}")
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
         st.rerun()
 
+# ----------------- 2. HUB IA -----------------
 elif st.session_state["pagina_attiva"] == "Hub IA":
     st.header("🤖 Hub Intelligenza Artificiale")
-    st.write("Accedi agli strumenti di IA avanzati.")
+    st.write("Accedi agli strumenti di IA avanzati per generare testi, immagini e strategie.")
+    
+    prompt_ia = st.text_input("Scrivi qui il comando o la richiesta per l'IA:")
+    if st.button("Genera Risposta IA"):
+        if prompt_ia:
+            st.info(f"💡 Risposta elaborata dall'IA per: '{prompt_ia}' -> Questa è una simulazione avanzata della piattaforma AuraSync IA.")
+        else:
+            st.warning("Inserisci prima un testo o una richiesta.")
+
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
         st.rerun()
 
-elif st.session_state["pagina_attiva"] == "Trend":
+# ----------------- 3. TREND & MERCATO -----------------
+elif st.session_state["pagina_attiva"] == "Trend & Mercato":
     st.header("📊 Trend & Mercato")
-    st.write("Monitoraggio dei trend in tempo reale.")
+    st.write("Monitoraggio in tempo reale dei trend di mercato e delle opportunità digitali.")
+    st.metric(label="Crescita Trend IA", value="+45.2%", delta="5.4% rispetto a ieri")
+    
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
         st.rerun()
 
+# ----------------- 4. AREA PREMI -----------------
 elif st.session_state["pagina_attiva"] == "Premi":
     st.header("🎁 Area Premi e Gettoni")
-    st.write("Gestisci i tuoi gettoni d'oro.")
+    st.write(f"I tuoi gettoni disponibili: **{st.session_state['gettoni']} 🪙**")
+    st.write("Riscatta i tuoi premi esclusivi accumulando gettoni con la Ruota della Fortuna!")
+    
+    if st.button("Riscatta Buono Sconto (10 gettoni)"):
+        if st.session_state["gettoni"] >= 10:
+            st.session_state["gettoni"] -= 10
+            st.success("🎁 Premio riscattato con successo! Controlla la tua email.")
+        else:
+            st.error("Ti servono almeno 10 gettoni per questo premio.")
+
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
         st.rerun()
 
+# ----------------- 5. PROVA GRATUITA -----------------
 elif st.session_state["pagina_attiva"] == "Prova":
     st.header("⚙️ Prova Gratuita")
-    st.write("Attiva la tua prova gratuita.")
+    st.write("La tua prova gratuita completa della piattaforma AuraSync Enterprise è attiva.")
+    st.success("Stai utilizzando tutte le funzioni sbloccate senza limitazioni.")
+    
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
         st.rerun()
 
+# ----------------- 6. PROFILO -----------------
 elif st.session_state["pagina_attiva"] == "Profilo":
     st.header("👤 Il mio Profilo")
-    st.write("Visualizza i tuoi dati personali.")
+    st.write("Gestisci le tue impostazioni personali e visualizza i tuoi progressi.")
+    st.text_input("Nome Utente", value="Utente AuraSync")
+    st.text_input("Email", value="maggioapps@example.com")
+    st.write(f"🪙 Gettoni nel saldo: {st.session_state['gettoni']}")
+    
     st.divider()
     if st.button("🏠 Torna alla Home"):
         vai_a_home()
