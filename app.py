@@ -119,7 +119,7 @@ with st.sidebar:
 # --- FLUSSO AUTOMATICO: 1. TUTORIAL (120s) -> 2. RUOTA DELLA FORTUNA ---
 
 if st.session_state.authenticated:
-    # STEP 1: Tutorial Iniziale obbligatorio (120 secondi con finale 3 gettoni omaggio)
+    # STEP 1: Tutorial Iniziale obbligatorio
     if not st.session_state.tutorial_completed:
         st.info("🎓 **Benvenuto in AuraSync! Completa il tutorial rapido (120s) per sbloccare la piattaforma e ricevere 3 Gettoni d'Oro omaggio!**")
         
@@ -137,7 +137,6 @@ if st.session_state.authenticated:
             st.success("🎉 Tutorial completato! Hai ricevuto **3 Gettoni d'Oro omaggio**!")
             st.rerun()
             
-        st.stop interrompe l'esecuzione finché il tutorial non è completato
         st.stop()
 
     # STEP 2: Ruota della Fortuna (si apre solo dopo il tutorial)
