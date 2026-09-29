@@ -107,31 +107,35 @@ with st.sidebar:
         st.divider()
         selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard Centrale"] + list(AURASYNC_CATALOG.keys()))
     else:
-        st.info("ℹ️ Segui il video tutorial e ascolta la voce guida prima di accedere.")
+        st.info("ℹ️ Segui il tutorial vocale e il video prima di accedere.")
         selected_area = "🏠 Dashboard Centrale"
 
-# --- FLUSSO PRE-LOGIN: 1. VIDEO TUTORIAL & VOCE -> 2. RUOTA -> 3. LOGIN ---
+# --- FLUSSO PRE-LOGIN: 1. VOCE PARLANTE E VIDEO -> 2. RUOTA -> 3. LOGIN ---
 
 if not st.session_state.tutorial_completed:
     st.title("🎬 Video Tutorial Ufficiale (Mappatura 125 App)")
-    st.warning("🎥 **Guida interattiva:** Ascolta la voce guida e guarda il video dimostrativo per sbloccare subito **3 Gettoni d'Oro omaggio**!")
+    st.warning("🎧 **Voce Guida Attiva:** Clicca sul pulsante qui sotto per ascoltare la spiegazione vocale e sbloccare **3 Gettoni d'Oro omaggio**!")
 
-    # Box multimediale con voce guida integrata
+    # Sintesi vocale integrata del browser in Italiano (Voce parlante reale)
     st.markdown("""
         <div style="padding: 20px; background: rgba(0, 200, 255, 0.08); border-radius: 12px; border: 1px solid rgba(0, 200, 255, 0.2); margin-bottom: 20px;">
-            <p style="font-size: 1.1em; color: #00bcd4; font-weight: bold; margin-bottom: 8px;">🎧 Voce Guida Femminile Ufficiale:</p>
-            <audio controls style="width: 100%;">
-              <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
-              Il tuo browser non supporta l'elemento audio.
-            </audio>
-            <p style="font-style: italic; color: #e0e0e0; margin-top: 10px;">
+            <p style="font-size: 1.1em; color: #00bcd4; font-weight: bold; margin-bottom: 8px;">🎙️ Sintesi Vocale in Italiano:</p>
+            <button onclick="
+                const utterance = new SpeechSynthesisUtterance('Benvenuta in AuraSync! Ti guiderò attraverso la mappatura completa delle nostre centoventicinque mini applicazioni, suddivise in dieci aree strategiche. Guarda il video qui sotto per scoprire come sfruttare al massimo ogni funzione.');
+                utterance.lang = 'it-IT';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            " style="background-color: #00bcd4; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                🔊 Ascolta la Voce Guida
+            </button>
+            <p style="font-style: italic; color: #e0e0e0; margin-top: 12px;">
             "Benvenuta in AuraSync! Ti guiderò attraverso la mappatura completa delle nostre 125 mini-applicazioni cognitive, 
-            suddivise in 10 aree strategiche. Guarda il video qui sotto per scoprire come sfruttare al massimo ogni funzione."
+            suddivise in 10 aree strategiche..."
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Video dimostrativo esteso (durata ampia)
+    # Video dimostrativo
     st.video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4")
 
     st.markdown("""
