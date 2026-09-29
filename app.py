@@ -114,26 +114,27 @@ with st.sidebar:
 
 if not st.session_state.tutorial_completed:
     st.title("🎬 Video Tutorial Ufficiale (Mappatura 125 App)")
-    st.warning("🎧 **Voce Guida Attiva:** Clicca sul pulsante qui sotto per ascoltare la spiegazione vocale e sbloccare **3 Gettoni d'Oro omaggio**!")
+    st.warning("🎧 **Voce Guida Attiva:** Clicca sul pulsante per ascoltare la spiegazione completa e sbloccare **3 Gettoni d'Oro omaggio**!")
 
-    # Sintesi vocale integrata del browser in Italiano (Voce parlante reale)
-    st.markdown("""
-        <div style="padding: 20px; background: rgba(0, 200, 255, 0.08); border-radius: 12px; border: 1px solid rgba(0, 200, 255, 0.2); margin-bottom: 20px;">
-            <p style="font-size: 1.1em; color: #00bcd4; font-weight: bold; margin-bottom: 8px;">🎙️ Sintesi Vocale in Italiano:</p>
+    # Componente HTML pulito con Sintesi Vocale nativa del browser (Voce Parlante Italiana)
+    st.components.v1.html("""
+        <div style="padding: 20px; background: rgba(0, 200, 255, 0.1); border-radius: 12px; border: 1px solid rgba(0, 200, 255, 0.3); font-family: sans-serif; text-align: center;">
+            <p style="color: #00bcd4; font-weight: bold; font-size: 1.1em; margin-bottom: 12px;">🎙️ Voce Guida Femminile Ufficiale</p>
             <button onclick="
-                const utterance = new SpeechSynthesisUtterance('Benvenuta in AuraSync! Ti guiderò attraverso la mappatura completa delle nostre centoventicinque mini applicazioni, suddivise in dieci aree strategiche. Guarda il video qui sotto per scoprire come sfruttare al massimo ogni funzione.');
+                window.speechSynthesis.cancel();
+                const text = 'Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. Abbiamo mappato ben centoventicinque mini applicazioni divise in dieci aree strategiche. Vuoi chattare con un intelligenza artificiale, analizzare le piante, scrivere script virali o gestire il tuo business? C è un app per tutto, dalla A alla Z. Guarda il video sotto e preparati a esplorare il futuro!';
+                const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'it-IT';
-                utterance.rate = 1.0;
+                utterance.rate = 0.95;
                 window.speechSynthesis.speak(utterance);
-            " style="background-color: #00bcd4; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                🔊 Ascolta la Voce Guida
+            " style="background-color: #ff4b4b; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                🔊 Avvia Ascolta Voce Guida (Italiano)
             </button>
-            <p style="font-style: italic; color: #e0e0e0; margin-top: 12px;">
-            "Benvenuta in AuraSync! Ti guiderò attraverso la mappatura completa delle nostre 125 mini-applicazioni cognitive, 
-            suddivise in 10 aree strategiche..."
+            <p style="font-style: italic; color: #ccc; margin-top: 15px; font-size: 0.95em;">
+            "Fermati un attimo! Stai per entrare nel Sistema Operativo Cognitivo più potente del web: AuraSync. Abbiamo mappato ben 125 mini-applicazioni..."
             </p>
         </div>
-    """, unsafe_allow_html=True)
+    """, height=180)
 
     # Video dimostrativo
     st.video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4")
@@ -194,3 +195,4 @@ else:
         apps_in_area = AURASYNC_CATALOG[selected_area]
         chosen_app = st.selectbox("Seleziona la Mini-Applicazione:", apps_in_area)
         st.info(f"Hai selezionato: **{chosen_app}**. Modulo pronto per l'esecuzione.")
+        
