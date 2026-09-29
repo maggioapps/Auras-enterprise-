@@ -23,6 +23,10 @@ if 'streak_giorni' not in st.session_state:
 if 'pet_health' not in st.session_state:
     st.session_state.pet_health = 100 
 
+# Controllo per aprire la ruota in automatico all'avvio o al login
+if 'mostra_ruota_auto' not in st.session_state:
+    st.session_state.mostra_ruota_auto = True
+
 # --- 2. BARRA LATERALE: ACCOUNT, WALLET, ABBONAMENTI & ADMIN ---
 st.sidebar.markdown("### 🔐 AuraSync Security Hub")
 
@@ -62,6 +66,7 @@ if st.session_state.utente_corrente is None:
             if pass_valida:
                 st.session_state.utente_corrente = u_log
                 st.session_state.utente_eta = eta_utente
+                st.session_state.mostra_ruota_auto = True # Riattiva l'apertura automatica al login
                 st.rerun()
             else:
                 st.sidebar.error("Credenziali non valide!")
@@ -79,6 +84,7 @@ else:
     
     if st.sidebar.button("🚪 Logout"):
         st.session_state.utente_corrente = None
+        st.session_state.mostra_ruota_auto = True
         st.rerun()
 
 SEI_ADMIN = (st.session_state.utente_corrente == "admin_principale")
@@ -101,21 +107,26 @@ with col_head2:
 
 st.write("Piattaforma SaaS PWA globale. Esplora liberamente i moduli specialistici, i tool di intelligenza artificiale e le funzioni dirompenti.")
 
-st.markdown("---")
-
-# --- 4. RUOTA DELLA FORTUNA SEMPRE VISIBILE NELLA HOME ---
-with st.container():
-    st.markdown("### 🎡 Ruota della Fortuna & Bonus Giornaliero (Loot Table)")
-    st.write("Gira la ruota in primo piano per riscuotere subito i tuoi gettoni bonus!")
-    
-    col_rf1, col_rf2 = st.columns([2, 3])
-    with col_rf1:
-        if st.button("✨ Gira la Ruota Ora (Bonus +3 Oro)", type="primary", use_container_width=True):
-            st.session_state.wallet_oro += 3
-            st.success("🎉 Hai vinto **3 Gettoni d'Oro** accreditati nel wallet!")
-            st.rerun()
-    with col_rf2:
-        st.info(f"🪙 Il tuo saldo attuale è di **{st.session_state.wallet_oro} Gettoni d'Oro** e **{st.session_state.wallet_platino} Monete Platino**.")
+# --- 4. RUOTA DELLA FORTUNA AUTOMATICA AL CARICAMENTO/LOGIN ---
+if st.session_state.mostra_ruota_auto:
+    st.markdown("---")
+    with st.container():
+        st.warning("🎁 **Bonus Benvenuto Rilevato!** La Ruota della Fortuna si è aperta in automatico.")
+        st.subheader("🎡 Ruota della Fortuna & Bonus Giornaliero")
+        st.write("Gira subito la ruota per riscuotere il tuo premio di gettoni d'oro gratuiti!")
+        
+        col_r1, col_r2 = st.columns(2)
+        with col_r1:
+            if st.button("✨ Gira la Ruota Ora (+3 Oro)", type="primary", use_container_width=True):
+                st.session_state.wallet_oro += 3
+                st.session_state.mostra_ruota_auto = False
+                st.success("🎉 Hai vinto **3 Gettoni d'Oro** accreditati nel wallet!")
+                st.rerun()
+        with col_r2:
+            if st.button("❌ Chiudi Finestra", use_container_width=True):
+                st.session_state.mostra_ruota_auto = False
+                st.rerun()
+    st.markdown("---")
 
 st.markdown("---")
 st.subheader("🗂️ Indice Generale delle Opzioni (In ordine alfabetico)")
