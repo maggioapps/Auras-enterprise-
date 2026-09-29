@@ -95,18 +95,7 @@ AURASYNC_CATALOG = {
 with st.sidebar:
     st.title("✨ AuraSync PWA")
     
-    if not st.session_state.authenticated:
-        st.subheader("🔐 Security Hub")
-        user = st.text_input("Username")
-        if st.button("Accedi"):
-            if user:
-                st.session_state.authenticated = True
-                st.session_state.username = user
-                # Resetta i flag di onboarding al nuovo login
-                st.session_state.tutorial_completed = False
-                st.session_state.wheel_spun_today = False
-                st.rerun()
-    else:
+    if st.session_state.authenticated:
         st.success(f"Utente: **{st.session_state.username}**")
         st.metric("Gettoni", f"{st.session_state.wallet_tokens} 🪙")
         st.metric("Azioni FUP", f"{st.session_state.daily_actions_left} ⚡")
@@ -115,58 +104,72 @@ with st.sidebar:
             st.session_state.tutorial_completed = False
             st.session_state.wheel_spun_today = False
             st.rerun()
-
-    st.divider()
-    selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard & Onboarding"] + list(AURASYNC_CATALOG.keys()))
-
-# --- GESTIONE SCHERMATA PRINCIPALE ---
-
-if not st.session_state.authenticated:
-    # Schermata pre-login
-    st.title("✨ Benvenuto in AuraSync PWA")
-    st.info("👈 Effettua il login dalla barra laterale per iniziare l'esperienza guidata.")
-else:
-    # SE L'UTENTE È AUTENTICATO, CONTROLUCIAMO L'ONBOARDING OBBLIGATORIO:
-    
-    # FASE 1: Tutorial iniziale di 120 secondi
-    if not st.session_state.tutorial_completed:
-        st.title("🎓 Tutorial Iniziale (120 Secondi)")
-        st.warning("Completa la lettura di questa guida introduttiva per sbloccare la piattaforma e ricevere subito **3 Gettoni d'Oro omaggio**!")
-        
-        st.markdown("""
-        ### Benvenuto nel Sistema Operativo Cognitivo
-        * **125 Mini-Applicazioni:** Sfrutta strumenti avanzati di IA, business, design e benessere.
-        * **Fair Use Policy & Gettoni:** Gestisci i tuoi crediti energetici per eseguire i task.
-        * **Pet Digitale:** Mantieni attiva la tua streak giornaliera.
-        """)
-        
-        if st.button("✅ Ho completato il tutorial (Ricevi 3 Gettoni)", type="primary"):
-            st.session_state.tutorial_completed = True
-            st.session_state.wallet_tokens += 3
-            st.balloons()
-            st.success("🎉 Tutorial completato con successo! 3 Gettoni accreditati.")
-            st.rerun()
-            
-    # FASE 2: Ruota della Fortuna (si apre solo se il tutorial è fatto, ma la ruota non è stata ancora girata)
-    elif not st.session_state.wheel_spun_today:
-        st.title("🎡 Ruota della Fortuna Giornaliera")
-        st.info("Il tutorial è completato! Ora gira la ruota per vincere gettoni extra prima di accedere alla dashboard.")
-        
-        if st.button("🎁 Gira la Ruota Ora!", type="primary"):
-            won = random.choice([1, 2, 3, 5, 10])
-            st.session_state.wallet_tokens += won
-            st.session_state.wheel_spun_today = True
-            st.balloons()
-            st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**!")
-            st.rerun()
-            
-    # FASE 3: Piattaforma sbloccata (Dashboard e 125 App)
+        st.divider()
+        selected_area = st.radio("Seleziona Area:", ["🏠 Dashboard Centrale"] + list(AURASYNC_CATALOG.keys()))
     else:
-        if selected_area == "🏠 Dashboard & Onboarding":
-            st.subheader("Benvenuto nella Dashboard Centrale di AuraSync")
-            st.write("Tutti i sistemi sono attivi. Scegli un'area dal menu laterale per esplorare le 125 mini-applicazioni.")
-        else:
-            st.subheader(selected_area)
-            apps_in_area = AURASYNC_CATALOG[selected_area]
-            chosen_app = st.selectbox("Seleziona la Mini-Applicazione:", apps_in_area)
-            st.info(f"Hai selezionato: **{chosen_app}**. Modulo pronto per l'esecuzione.")
+        st.info("ℹ️ Completa il tutorial e la ruota al centro dello schermo, poi effettua l'accesso.")
+        selected_area = "🏠 Dashboard Centrale"
+
+# --- FLUSSO PRE-LOGIN: 1. TUTORIAL (120s) -> 2. RUOTA DELLA FORTUNA -> 3. LOGIN & ACCESSO ---
+
+if not st.session_state.tutorial_completed:
+    # FASE 1: Tutorial iniziale
+    st.title("🎓 Benvenuto in AuraSync - Tutorial Iniziale (120s)")
+    st.warning("Leggi la guida introduttiva per sbloccare la piattaforma e ricevere subito **3 Gettoni d'Oro omaggio** nel tuo futuro wallet!")
+    
+    st.markdown("""
+    ### Cosa scoprirai in AuraSync:
+    1. **125 Mini-Applicazioni** suddivise in 10 aree specializzate (IA, Business, Design, Benessere, Teen e molto altro).
+    2. **Token Economy e FUP:** Gestione intelligente dei crediti per l'utilizzo dei moduli.
+    3. **Community & Pet Digitale:** Interazioni social e mantenimento della streak giornaliera.
+    """)
+    
+    if st.button("✅ Ho completato il tutorial (Ricevi 3 Gettoni)", type="primary"):
+        st.session_state.tutorial_completed = True
+        st.session_state.wallet_tokens += 3
+        st.balloons()
+        st.success("🎉 Tutorial completato! 3 Gettoni d'Oro aggiunti al tuo bonus.")
+        st.rerun()
+
+elif not st.session_state.wheel_spun_today:
+    # FASE 2: Ruota della Fortuna
+    st.title("🎡 Ruota della Fortuna Bonus")
+    st.info("Il tutorial è completato! Gira la ruota per accumulare altri gettoni omaggio prima di effettuare il login.")
+    
+    if st.button("🎁 Gira la Ruota Ora!", type="primary"):
+        won = random.choice([1, 2, 3, 5, 10])
+        st.session_state.wallet_tokens += won
+        st.session_state.wheel_spun_today = True
+        st.balloons()
+        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Totale gettoni attuali: {st.session_state.wallet_tokens})")
+        st.rerun()
+
+elif not st.session_state.authenticated:
+    # FASE 3: Schermata di Login / Registrazione finale dopo tutorial e ruota
+    st.title("🔐 Accesso a AuraSync PWA")
+    st.success(f"Ottimo! Hai completato il tutorial e la ruota. Hai accumulato **{st.session_state.wallet_tokens} Gettoni d'Oro** omaggio.")
+    st.write("Inserisci il tuo username per entrare ufficialmente nella dashboard e sbloccare le 125 mini-app.")
+    
+    with st.form("login_form"):
+        username_input = st.text_input("Scegli il tuo Username:")
+        submit_login = st.form_submit_button("Entra nella Piattaforma 🚀", type="primary")
+        
+        if submit_login:
+            if username_input.strip():
+                st.session_state.authenticated = True
+                st.session_state.username = username_input.strip()
+                st.rerun()
+            else:
+                st.error("Inserisci un username valido per continuare.")
+
+else:
+    # FASE 4: Piattaforma pienamente sbloccata (Dashboard e catalogo 125 App)
+    if selected_area == "🏠 Dashboard Centrale":
+        st.subheader(f"Bentornato, {st.session_state.username}! 🌟")
+        st.write("Tutti i sistemi di AuraSync sono attivi. Scegli un'area dal menu laterale per esplorare le 125 mini-applicazioni.")
+        st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+    else:
+        st.subheader(selected_area)
+        apps_in_area = AURASYNC_CATALOG[selected_area]
+        chosen_app = st.selectbox("Seleziona la Mini-Applicazione:", apps_in_area)
+        st.info(f"Hai selezionato: **{chosen_app}**. Modulo pronto per l'esecuzione.")
