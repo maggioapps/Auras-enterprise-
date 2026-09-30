@@ -14,7 +14,9 @@ st.set_page_config(
 if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 50
 if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
 if "active_app" not in st.session_state: st.session_state.active_app = None
-if "chat_history" not in st.session_state: st.session_state.chat_history = []
+if "chat_history" not in st.session_state: st.session_state.chat_history = [
+    ("AuraBot", "Benvenuto! Sono il tuo assistente IA universale. Come posso aiutarti oggi?")
+]
 if "pet" not in st.session_state: st.session_state.pet = {"name": "AuraPet", "energy": 80, "hunger": 50, "mood": "Felice 😺"}
 if "budget_items" not in st.session_state: st.session_state.budget_items = [{"desc": "Stipendio", "amount": 1500, "type": "Entrata"}]
 
@@ -203,24 +205,36 @@ AURASYNC_CATALOG = {
     ]
 }
 
-# --- MOTORE INTERATTIVO SPECIFICO PER OGNI APP ---
+# --- FUNZIONE GESTIONE INTERATTIVA DELL'APP ATTIVA ---
 def render_active_app_interface(app_name):
     st.subheader(f"🚀 Modulo Attivo: {app_name}")
     st.divider()
 
-    # 1. Chat Universale
+    # 1. Chat Universale (Corretta per mostrare i messaggi in sequenza corretta)
     if "AuraBot Universal Chat" in app_name:
-        user_msg = st.text_input("Scrivi un messaggio ad AuraBot:", key="chat_input")
-        if st.button("Invia messaggio") and user_msg:
-            st.session_state.chat_history.append(("Tu", user_msg))
-            reply = f"Analisi completata per '{user_msg}': La configurazione cognitiva suggerisce un approccio strutturato e orientato agli obiettivi."
-            st.session_state.chat_history.append(("AuraBot", reply))
+        st.write("💬 **Conversazione in tempo reale con AuraBot:**")
         
-        for sender, text in reversed(st.session_state.chat_history[-6:]):
-            if sender == "Tu":
-                st.markdown(f"👤 **{sender}:** {text}")
-            else:
-                st.markdown(f"🤖 **{sender}:** {text}")
+        # Mostra la cronologia chat nell'ordine corretto
+        chat_container = st.container()
+        with chat_container:
+            for sender, text in st.session_state.chat_history:
+                if sender == "Tu":
+                    st.markdown(f"👤 **{sender}:** {text}")
+                else:
+                    st.markdown(f"🤖 **{sender}:** {text}")
+        
+        st.divider()
+        
+        # Form di invio messaggio reattivo
+        with st.form(key="chat_form", clear_on_submit=True):
+            user_msg = st.text_input("Scrivi un messaggio ad AuraBot:")
+            submit_btn = st.form_submit_button("Invia messaggio 🚀")
+            
+            if submit_btn and user_msg:
+                st.session_state.chat_history.append(("Tu", user_msg))
+                reply = f"Ho analizzato la tua richiesta '{user_msg}': Il sistema cognitivo ha elaborato una risposta ottimizzata e pronta all'uso."
+                st.session_state.chat_history.append(("AuraBot", reply))
+                st.rerun()
 
     # 2. Digital Pet Companion
     elif "Digital Pet Companion" in app_name:
@@ -259,12 +273,12 @@ def render_active_app_interface(app_name):
         if st.button("Aggiungi Transazione"):
             st.session_state.budget_items.append({"desc": desc if desc else "Transazione", "amount": amount, "type": m_type})
             st.success("Transazione registrata con successo!")
+            st.rerun()
         
         totale = sum(item['amount'] if item['type'] == 'Entrata' else -item['amount'] for item in st.session_state.budget_items)
         st.metric("Bilancio Totale Attuale", f"€ {totale:.2f}")
         st.write("**Storico Movimenti:**")
         for item in st.session_state.budget_items:
-            color = "green" if item['type'] == 'Entrata' else "red"
             st.markdown(f"- {item['desc']}: **{'+' if item['type']=='Entrata' else '-' }€{item['amount']}**")
 
     # 4. Gestione Quiz e Giochi (Area 10 e simili)
@@ -272,7 +286,6 @@ def render_active_app_interface(app_name):
         st.subheader("🎯 Arena di Gioco Interattiva")
         st.write("Metti alla prova le tue abilità risolvendo questa sfida generata dal sistema:")
         
-        # Generiamo un quiz basato sul nome dell'app
         q_options = ["Risposta A: Ottimizzazione Algoritmica", "Risposta B: Euristica Dinamica", "Risposta C: Elaborazione Neurale"]
         user_choice = st.radio("Seleziona la risposta corretta:", q_options)
         
@@ -294,7 +307,7 @@ def render_active_app_interface(app_name):
 - Struttura: Modulare e scalabile con standard di mercato
 - Risultato: Pronto per l'implementazione immediata in produzione.""", language="markdown")
 
-    # 6. Tutti gli altri moduli (Analizzatori, Planner, Strumenti)
+    # 6. Tutti gli altri moduli
     else:
         st.write("Pannello operativo avanzato per questo modulo specifico.")
         param = st.text_input("Parametri di input personalizzati:", placeholder="Inserisci dati o istruzioni...")
