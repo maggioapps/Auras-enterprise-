@@ -14,8 +14,8 @@ st.set_page_config(
 if "tutorial_completed" not in st.session_state: st.session_state.tutorial_completed = False
 if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today = False
 if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
-if "wheel_result" not in st.session_state: st.session_state.wheel_result = None
-if "current_page" not in st.session_state: st.session_state.current_page = "🌐 Bacheca Pubblica"
+if "wheel_result_val" not in st.session_state: st.session_state.wheel_result_val = None
+if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
 
 # CATALOGO DELLE 150 APPLICAZIONI (Ordinate per importanza)
 AURASYNC_CATALOG = {
@@ -103,21 +103,22 @@ AURASYNC_CATALOG = {
     ]
 }
 
-# --- FLUSSO SEQUENZIALE: 1. TUTORIAL (10 SEC) -> 2. RUOTA ROTONDA -> 3. DASHBOARD ---
+# --- FLUSSO PRINCIPALE ---
 
 if not st.session_state.tutorial_completed:
+    # 1. TUTORIAL (20 SECONDI)
     st.title("📘 Guida Ufficiale ad AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
     st.write("Questa guida introduttiva illustra l'architettura della piattaforma e la gestione dei Gettoni d'Oro.")
     
-    st.info("⏳ **Il tutorial si chiuderà automaticamente tra 10 secondi** accreditando subito **3 Gettoni d'Oro** omaggio...")
+    st.info("⏳ **Il tutorial si chiuderà automaticamente tra 20 secondi** accreditando subito **3 Gettoni d'Oro** omaggio...")
 
     bar = st.progress(0)
     status_placeholder = st.empty()
 
-    for i in range(10):
-        status_placeholder.text(f"Chiusura automatica tra {10 - i} secondi...")
-        bar.progress((i + 1) * 10)
+    for i in range(20):
+        status_placeholder.text(f"Chiusura automatica tra {20 - i} secondi...")
+        bar.progress((i + 1) * 5)
         time.sleep(1)
 
     st.session_state.tutorial_completed = True
@@ -125,10 +126,10 @@ if not st.session_state.tutorial_completed:
     st.rerun()
 
 elif not st.session_state.wheel_spun_today:
+    # 2. RUOTA DELLA FORTUNA CON CHIUSURA E APERTURA AUTOMATICA DELLA BACHECA
     st.title("🎡 Ruota della Fortuna Rotonda")
-    st.write("Il tutorial è completato! Fai girare la ruota rotonda per vincere i Gettoni d'Oro omaggio prima di accedere al menu principale.")
+    st.write("Il tutorial è stato completato! Premi **START** per far girare la ruota. Si chiuderà automaticamente aprendo la Bacheca.")
 
-    # HTML/CSS per la Ruota Rotonda con Animazione e Pulsante START
     st.markdown("""
     <style>
     .wheel-outer {
@@ -139,8 +140,7 @@ elif not st.session_state.wheel_spun_today:
         margin: 20px 0;
     }
     .wheel-pointer {
-        width: 0; 
-        height: 0; 
+        width: 0; height: 0; 
         border-left: 15px solid transparent;
         border-right: 15px solid transparent;
         border-bottom: 25px solid #ff4b4b;
@@ -148,13 +148,9 @@ elif not st.session_state.wheel_spun_today:
         z-index: 10;
     }
     .wheel {
-        width: 260px;
-        height: 260px;
+        width: 260px; height: 260px;
         border-radius: 50%;
         border: 8px solid #222;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         background: conic-gradient(
             #00bcd4 0deg 72deg,
             #4caf50 72deg 144deg,
@@ -162,72 +158,92 @@ elif not st.session_state.wheel_spun_today:
             #ff9800 216deg 288deg,
             #e91e63 288deg 360deg
         );
-        transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
-    }
-    .wheel-label {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        font-weight: bold;
-        color: #111;
-        font-size: 1.1em;
     }
     </style>
     <div class="wheel-outer">
         <div class="wheel-pointer"></div>
-        <div id="fortuneWheel" class="wheel"></div>
+        <div class="wheel"></div>
     </div>
     """, unsafe_allow_html=True)
 
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-    with col_btn2:
+    col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
+    with col_b2:
         if st.button("🚀 START - Gira la Ruota!", type="primary", use_container_width=True):
             won = random.choice([1, 2, 3, 5, 10])
             st.session_state.wallet_tokens += won
             st.session_state.wheel_spun_today = True
-            st.session_state.wheel_result = won
+            st.session_state.wheel_result_val = won
             st.balloons()
+            st.success(f"🎉 Hai vinto {won} Gettoni d'Oro! Apertura Bacheca in corso...")
+            time.sleep(2.5)
             st.rerun()
 
 else:
-    if st.session_state.wheel_result is not None:
-        st.title("🎉 Risultato Ruota della Fortuna")
-        st.success(f"La ruota si è fermata con successo! Hai vinto **{st.session_state.wheel_result} Gettoni d'Oro**!")
-        st.write(f"Il tuo saldo totale nel portafoglio è di **{st.session_state.wallet_tokens} 🪙**.")
-        
-        if st.button("✨ Procedi al Menu Principale", type="primary", use_container_width=True):
-            st.session_state.wheel_result = None
+    # --- 3. INTERFACCIA PRINCIPALE ---
+    
+    top_col1, top_col2 = st.columns([3, 1])
+    with top_col1:
+        st.title("🌐 Bacheca Pubblica AuraSync")
+    with top_col2:
+        st.write("") 
+        if st.button(">> 📁 Apri Menu File", type="secondary", use_container_width=True):
+            if st.session_state.active_view == "bacheca":
+                st.session_state.active_view = "menu_file"
+            else:
+                st.session_state.active_view = "bacheca"
             st.rerun()
+
+    st.divider()
+
+    if st.session_state.active_view == "bacheca":
+        st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
+        
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+        with col_m2:
+            st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+
+        st.divider()
+        st.subheader("📢 Ultime Notizie dalla Community")
+        st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu ordinato con barra di ricerca interna.")
+        
     else:
-        # --- MENU PRINCIPALE A PAGINA SEPARATA ORDINATO PER IMPORTANZA CON ICONE ---
-        st.title("✨ AuraSync OS - Menu Principale")
-        st.write(f"Benvenuto, utente autenticato! | Gettoni Disponibili: **{st.session_state.wallet_tokens} 🪙**")
+        # --- MENU FILE E MODULI CON BARRA DI RICERCA INTERNA IN ALTO ---
+        st.header("📂 Menu File e Moduli (Pronti all'Uso)")
+        st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙**")
+        
+        # BARRA DI RICERCA INTERNA
+        search_query = st.text_input("🔍 Cerca un file, modulo o gioco tra tutti i contenuti:", placeholder="Scrivi ad esempio 'Chat', 'Quiz', 'Budget'...")
+        
         st.divider()
 
-        # Selezione dell'area tramite pulsanti in griglia ordinati per importanza
-        categories = list(AURASYNC_CATALOG.keys())
+        if search_query:
+            st.subheader(f"Risultati della ricerca per: '{search_query}'")
+            found_items = []
+            for area, files in AURASYNC_CATALOG.items():
+                for f in files:
+                    if search_query.lower() in f.lower():
+                        found_items.append((area, f))
+            
+            if found_items:
+                for area, file_name in found_items:
+                    st.write(f"• **{file_name}** *(Area: {area})*")
+                chosen_search_file = st.selectbox("Seleziona il file trovato da avviare:", [item[1] for item in found_items])
+                st.info(f"File attivo: **{chosen_search_file}**. Pronto all'uso.")
+            else:
+                st.warning("Nessun file trovato con questa parola chiave.")
+        else:
+            categories = list(AURASYNC_CATALOG.keys())
+            selected_cat = st.selectbox("Seleziona Area Organizzata:", categories)
+            
+            st.subheader(selected_cat)
+            files_in_cat = AURASYNC_CATALOG[selected_cat]
+            chosen_file = st.selectbox("Seleziona il file o modulo pronto all'uso:", files_in_cat)
+            
+            st.info(f"File attivo: **{chosen_file}**. Ambiente di esecuzione caricato correttamente.")
         
-        st.subheader("📂 Seleziona un'Area del Sistema:")
-        
-        # Creiamo una griglia pulita con colonne
-        cols = st.columns(2)
-        for idx, cat in enumerate(categories):
-            with cols[idx % 2]:
-                if st.button(cat, use_container_width=True):
-                    st.session_state.current_page = cat
-                    st.rerun()
-
         st.divider()
-        
-        # Mostriamo il contenuto dell'area selezionata
-        selected_cat = st.session_state.current_page
-        st.header(selected_cat)
-        
-        apps = AURASYNC_CATALOG[selected_cat]
-        chosen_app = st.selectbox("Seleziona lo strumento o modulo specifico:", apps)
-        st.info(f"Modulo attivo: **{chosen_app}**. Ambiente pronto per l'esecuzione.")
-        
-        if st.button("🏠 Torna alla Selezione delle Aree"):
-            st.session_state.current_page = "🌐 Bacheca Pubblica"
+        if st.button("🔙 Torna alla Bacheca Pubblica"):
+            st.session_state.active_view = "bacheca"
             st.rerun()
