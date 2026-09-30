@@ -107,37 +107,10 @@ AURASYNC_CATALOG = {
 # --- FLUSSO PRINCIPALE ---
 
 if not st.session_state.tutorial_completed:
-    # 1. TUTORIAL SPECIFICO (20 SECONDI)
-    st.title("📘 Manuale Operativo Ufficiale - AuraSync OS")
-    st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
-    
-    st.write("""
-    Questo sistema è progettato per offrirti un controllo totale su **150 moduli avanzati, strumenti di IA e giochi interattivi**. 
-    Ecco come è strutturata la tua esperienza:
-    
-    * **🪙 Wallet e Gettoni d'Oro:** All'avvio riceverai gettoni omaggio che potrai incrementare tramite la Ruota della Fortuna per sbloccare funzionalità premium.
-    * **📂 Menu a Icone e Dettagli:** Cliccando sulle frecce in alto a destra `(>> 📁 Apri Menu File)` si aprirà la pagina interattiva con tutte le 150 applicazioni disposte a icona, complete di dettagli e pulsanti di avvio rapido.
-    * **🔍 Barra di Ricerca Interna:** Trova istantaneamente qualsiasi applicazione digitando una parola chiave nel menu.
-    """)
-    
-    st.info("⏳ **Il tutorial avanzato si chiuderà automaticamente tra 20 secondi** accreditando subito **3 Gettoni d'Oro** nel tuo wallet...")
-
-    bar = st.progress(0)
-    status_placeholder = st.empty()
-
-    for i in range(20):
-        status_placeholder.text(f"Chiusura automatica tra {20 - i} secondi...")
-        bar.progress((i + 1) * 5)
-        time.sleep(1)
-
-    st.session_state.tutorial_completed = True
-    st.session_state.wallet_tokens += 3
-    st.rerun()
-
-elif not st.session_state.wheel_spun_today:
-    # 2. RUOTA DELLA FORTUNA CON CHIUSURA E APERTURA AUTOMATICA DELLA BACHECA
-    st.title("🎡 Ruota della Fortuna Rotonda")
-    st.write("Il tutorial è stato completato! Premi **START** per far girare la ruota. Si chiuderà automaticamente aprendo la Bacheca.")
+    # 1. LOADING & RUOTA DELLA FORTUNA INIZIALE
+    st.title("⚙️ Caricamento e Sincronizzazione in Corso...")
+    st.markdown("### Benvenuto in AuraSync OS — Preparazione dell'Ecosistema Cognitivo")
+    st.write("Durante il caricamento iniziale, fai girare la ruota integrata per vincere i Gettoni d'Oro di benvenuto!")
 
     st.markdown("""
     <style>
@@ -175,20 +148,21 @@ elif not st.session_state.wheel_spun_today:
     </div>
     """, unsafe_allow_html=True)
 
-    col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
-    with col_b2:
-        if st.button("🚀 START - Gira la Ruota!", type="primary", use_container_width=True):
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        if st.button("🎡 Gira la Ruota di Caricamento!", type="primary", use_container_width=True):
             won = random.choice([1, 2, 3, 5, 10])
             st.session_state.wallet_tokens += won
             st.session_state.wheel_spun_today = True
             st.session_state.wheel_result_val = won
             st.balloons()
-            st.success(f"🎉 Hai vinto {won} Gettoni d'Oro! Apertura Bacheca in corso...")
-            time.sleep(2.5)
+            st.success(f"🎉 Hai vinto {won} Gettoni d'Oro! Inizializzazione completata.")
+            time.sleep(2)
+            st.session_state.tutorial_completed = True
             st.rerun()
 
 else:
-    # --- 3. INTERFACCIA PRINCIPALE ---
+    # --- 2. INTERFACCIA PRINCIPALE (SENZA RUOTA) ---
     
     top_col1, top_col2 = st.columns([3, 1])
     with top_col1:
@@ -206,10 +180,8 @@ else:
 
     if st.session_state.active_view == "bacheca":
         if st.session_state.active_app:
-            # Se un'app è stata avviata dal menu a icone
             st.header(f"🚀 Modulo Attivo: {st.session_state.active_app}")
-            st.success(f"L'applicazione **{st.session_state.active_app}** è stata caricata con successo nell'area di lavoro.")
-            st.write("Ambiente operativo pronto per l'elaborazione dei dati e l'interazione cognitiva.")
+            st.success(f"L'applicazione **{st.session_state.active_app}** è stata caricata con successo.")
             
             col_back1, col_back2 = st.columns(2)
             with col_back1:
@@ -232,61 +204,55 @@ else:
 
             st.divider()
             st.subheader("📢 Ultime Notizie dalla Community")
-            st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu visivo a icone con dettagli e ricerca.")
+            st.info("• Tutti i 150 moduli sono pronti all'uso.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu visivo con Ricerca Esterna IA.")
         
     else:
-        # --- MENU FILE E MODULI A ICONE E DETTAGLI (TUTTI E 150) ---
+        # --- MENU FILE E MODULI CON RICERCA ESTERNA IA ---
         st.header("📂 Menu Applicazioni - Vista a Icone e Dettagli")
-        st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙** | Esplora le 150 applicazioni suddivise per area.")
+        st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙** | Esplora le 150 applicazioni.")
         
-        # BARRA DI RICERCA INTERNA
-        search_query = st.text_input("🔍 Cerca tra tutte le 150 applicazioni e giochi:", placeholder="Scrivi ad esempio 'Chat', 'Budget', 'Game', 'Eco'...")
+        # BARRA DI RICERCA ESTERNA IA POTENZIATA
+        ai_query = st.text_input("🤖 Ricerca Esterna IA (Cerca per parole chiave, concetti o numeri):", placeholder="Es. chat, game, budget, green, quiz...")
         
         st.divider()
 
-        if search_query:
-            st.subheader(f"Risultati della ricerca per: '{search_query}'")
-            found_items = []
+        filtered_catalog = {}
+        if ai_query:
+            query_terms = ai_query.lower().strip().split()
             for area, files in AURASYNC_CATALOG.items():
+                matched_files = []
                 for f in files:
-                    if search_query.lower() in f.lower():
-                        found_items.append((area, f))
+                    f_lower = f.lower()
+                    if any(term in f_lower or term in area.lower() for term in query_terms):
+                        matched_files.append(f)
+                if matched_files:
+                    filtered_catalog[area] = matched_files
             
-            if found_items:
-                st.write(f"Trovati **{len(found_items)}** moduli corrispondenti:")
-                cols = st.columns(3)
-                for idx, (area, file_name) in enumerate(found_items):
-                    with cols[idx % 3]:
-                        st.markdown(f"""
-                        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 10px; background-color: #fafafa;">
-                            <h4>🧩 {file_name}</h4>
-                            <p style="font-size: 12px; color: #666;">Categoria: {area}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        if st.button(f"Avvia ➔ {file_name[:15]}...", key=f"search_{idx}"):
-                            st.session_state.active_app = file_name
-                            st.session_state.active_view = "bacheca"
-                            st.rerun()
+            if not filtered_catalog:
+                st.warning("🤖 L'IA non ha trovato corrispondenze esatte. Mostriamo l'intero catalogo:")
+                filtered_catalog = AURASYNC_CATALOG
             else:
-                st.warning("Nessun file trovato con questa parola chiave.")
+                st.info(f"🤖 Risultati elaborati dall'IA per la ricerca: '{ai_query}'")
         else:
-            # MOSTRA PER CATEGORIE SOTTO FORMA DI GRIGLIA A ICONE E DETTAGLI
-            for category, files in AURASYNC_CATALOG.items():
-                st.subheader(category)
-                cols = st.columns(3)
-                for idx, file_item in enumerate(files):
-                    with cols[idx % 3]:
-                        st.markdown(f"""
-                        <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 12px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                            <h4 style="margin-bottom: 5px; font-size: 16px;">✨ {file_item}</h4>
-                            <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Modulo operativo integrato e pronto all'uso in ambiente AuraSync.</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        if st.button(f"🚀 Avvia Modulo", key=f"btn_{category}_{idx}"):
-                            st.session_state.active_app = file_item
-                            st.session_state.active_view = "bacheca"
-                            st.rerun()
-                st.divider()
+            filtered_catalog = AURASYNC_CATALOG
+
+        # MOSTRA IL CATALOGO A ICONE E DETTAGLI
+        for category, files in filtered_catalog.items():
+            st.subheader(category)
+            cols = st.columns(3)
+            for idx, file_item in enumerate(files):
+                with cols[idx % 3]:
+                    st.markdown(f"""
+                    <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 12px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <h4 style="margin-bottom: 5px; font-size: 16px;">✨ {file_item}</h4>
+                        <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Modulo operativo integrato e pronto all'uso in ambiente AuraSync.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    if st.button(f"🚀 Avvia Modulo", key=f"btn_{category}_{idx}"):
+                        st.session_state.active_app = file_item
+                        st.session_state.active_view = "bacheca"
+                        st.rerun()
+            st.divider()
         
         if st.button("🔙 Torna alla Bacheca Pubblica"):
             st.session_state.active_view = "bacheca"
