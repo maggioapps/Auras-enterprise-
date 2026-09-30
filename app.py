@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import time
 
 # Configurazione PWA
 st.set_page_config(
@@ -10,14 +11,12 @@ st.set_page_config(
 )
 
 # Inizializzazione dello State globale
-if "authenticated" not in st.session_state: st.session_state.authenticated = False
-if "username" not in st.session_state: st.session_state.username = ""
-if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
 if "tutorial_completed" not in st.session_state: st.session_state.tutorial_completed = False
 if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today = False
-if "daily_actions_left" not in st.session_state: st.session_state.daily_actions_left = 5
+if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
+if "wheel_result" not in st.session_state: st.session_state.wheel_result = None
 
-# CATALOGO COMPLETO DELLE 150 APPLICAZIONI (125 ORIGINALI + 25 GIOCHI E QUIZ)
+# CATALOGO COMPLETO DELLE 150 APPLICAZIONI (125 + 25 GIOCHI E QUIZ)
 AURASYNC_CATALOG = {
     "🧠 Area 1: Core IA & Produttività": [
         "1. AuraBot Universal Chat", "2. Branch Selector IA", "3. Voice & Persona Chameleon",
@@ -105,93 +104,118 @@ AURASYNC_CATALOG = {
     ]
 }
 
-# --- BARRA LATERALE (Nascosta/Estraibile) ---
+# --- BARRA LATERALE ---
 with st.sidebar:
     st.title("✨ Menu AuraSync")
-    
-    if st.session_state.authenticated:
-        st.success(f"Utente: **{st.session_state.username}**")
+    if st.session_state.tutorial_completed and st.session_state.wheel_spun_today:
+        st.success("Sistema Sbloccato")
         st.metric("Gettoni", f"{st.session_state.wallet_tokens} 🪙")
-        st.metric("Azioni FUP", f"{st.session_state.daily_actions_left} ⚡")
-        if st.button("Disconnetti / Reset"):
-            st.session_state.authenticated = False
+        if st.button("Reset Sessione"):
             st.session_state.tutorial_completed = False
             st.session_state.wheel_spun_today = False
+            st.session_state.wallet_tokens = 0
+            st.session_state.wheel_result = None
             st.rerun()
         st.divider()
         selected_area = st.radio("Seleziona Area e Moduli:", ["🌐 Bacheca Pubblica"] + list(AURASYNC_CATALOG.keys()))
     else:
-        st.info("ℹ️ Completa il percorso iniziale per sbloccare la Bacheca e le 150 applicazioni.")
+        st.info("ℹ️ Completa il tutorial e gira la ruota per sbloccare il menu.")
         selected_area = "🌐 Bacheca Pubblica"
 
-# --- FLUSSO SEQUENZIALE PRINCIPALE ---
+# --- FLUSSO SEQUENZIALE ---
 
 if not st.session_state.tutorial_completed:
-    # 1. TUTORIAL INIZIALE
+    # 1. TUTORIAL AUTOMATICO (10 SECONDI)
     st.title("📘 Guida Ufficiale ad AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
-    st.write("Leggi la guida rapida per comprendere l'architettura della piattaforma, la token economy e sbloccare subito i tuoi vantaggi.")
+    st.write("Questa guida introduttiva illustra l'architettura della piattaforma e la gestione dei Gettoni d'Oro.")
+    
+    st.info("⏳ **Il tutorial si chiuderà automaticamente tra 10 secondi** accreditando subito **3 Gettoni d'Oro** omaggio...")
 
-    st.divider()
+    # Progress bar e testo dinamico per i 10 secondi
+    bar = st.progress(0)
+    status_placeholder = st.empty()
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        #### 🎯 1. Architettura e Moduli
-        * **150 Applicazioni e Giochi:** Un ecosistema completo diviso in 11 aree tematiche (dall'IA alla produttività, fino ai 25 giochi e quiz per tutti).
-        * **Strumenti su Misura:** Moduli avanzati per business, creatività, analisi dati e intrattenimento cognitivo.
-        """)
-    with col2:
-        st.markdown("""
-        #### 🪙 2. Economia dei Gettoni
-        * **Bonus Immediato:** Ottieni subito **3 Gettoni d'Oro** completando questa lettura.
-        * **Ruota Bonus:** Subito dopo potrai girare la Ruota della Fortuna per vincere crediti extra prima di entrare nella Bacheca Pubblica.
-        """)
+    for i in range(10):
+        status_placeholder.text(f"Chiusura automatica tra {10 - i} secondi...")
+        bar.progress((i + 1) * 10)
+        time.sleep(1)
 
-    st.divider()
-
-    if st.button("✅ Ho letto la guida e confermo (Sblocca 3 Gettoni)", type="primary", use_container_width=True):
-        st.session_state.tutorial_completed = True
-        st.session_state.wallet_tokens += 3
-        st.balloons()
-        st.success("🎉 Guida completata! 3 Gettoni d'Oro accreditati.")
-        st.rerun()
+    st.session_state.tutorial_completed = True
+    st.session_state.wallet_tokens += 3
+    st.rerun()
 
 elif not st.session_state.wheel_spun_today:
-    # 2. RUOTA DELLA FORTUNA
+    # 2. RUOTA DELLA FORTUNA GRAFICA
     st.title("🎡 Ruota della Fortuna Bonus")
-    st.info("Il tutorial è completato! Gira la ruota per accumulare gettoni extra prima di accedere alla Bacheca Pubblica.")
-    
-    if st.button("🎁 Gira la Ruota Ora!", type="primary"):
+    st.write("Il tutorial è completato! Guarda i premi disponibili sulla ruota e tenta la fortuna per vincere crediti extra:")
+
+    # Box grafici dei premi limitati (1, 2, 3, 5, 10 gettoni)
+    st.markdown("""
+    <style>
+    .wheel-container {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 25px 0;
+    }
+    .prize-card {
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 12px;
+        font-size: 1.4em;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-align: center;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    </style>
+    <div class="wheel-container">
+        <div class="prize-card">1 🪙</div>
+        <div class="prize-card">2 🪙</div>
+        <div class="prize-card" style="background: linear-gradient(135deg, #ff4b4b, #ff8f00);">3 🪙</div>
+        <div class="prize-card">5 🪙</div>
+        <div class="prize-card">10 🪙</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if st.button("🎁 Gira la Ruota Ora!", type="primary", use_container_width=True):
         won = random.choice([1, 2, 3, 5, 10])
         st.session_state.wallet_tokens += won
         st.session_state.wheel_spun_today = True
+        st.session_state.wheel_result = won
         st.balloons()
-        st.success(f"🎊 Hai vinto altri **{won} Gettoni d'Oro**! (Saldo totale: {st.session_state.wallet_tokens} 🪙)")
         st.rerun()
 
 else:
-    # 3. ACCESSO ALLA BACHECA PUBBLICA (E PIATTAFORMA SBLOCCATA)
-    st.session_state.authenticated = True  # Auto-login sbloccato dopo la ruota
-
-    if selected_area == "🌐 Bacheca Pubblica":
-        st.title("🌐 Bacheca Pubblica AuraSync")
-        st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
-        st.write("Qui puoi visualizzare i contenuti condivisi, interagire con gli altri utenti e verificare i gettoni a tua disposizione.")
+    # 3. VISUALIZZAZIONE RISULTATO RUOTA E ACCESSO ALLA BACHECA PUBBLICA
+    if st.session_state.wheel_result is not None:
+        st.title("🎉 Risultato Ruota della Fortuna")
+        st.success(f"Complimenti! La ruota si è fermata su: **{st.session_state.wheel_result} Gettoni d'Oro**!")
+        st.write(f"Il tuo saldo totale aggiornato è di **{st.session_state.wallet_tokens} 🪙**.")
         
-        col_m1, col_m2 = st.columns(2)
-        with col_m1:
-            st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
-        with col_m2:
-            st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
-
-        st.divider()
-        st.subheader("📢 Ultime Notizie dalla Community")
-        st.info("• Aggiornamento v3.2 attivo: Aggiunti 25 nuovi giochi e quiz interattivi nell'Area 11!\n• Bacheca pubblica sincronizzata correttamente in modalità cloud PWA.")
-        
-        st.write("👉 *Usa il menu a scomparsa in alto a sinistra (tramite la freccia o la barra laterale) per esplorare tutte le 150 applicazioni e i giochi.*")
+        if st.button("🚀 Entra nella Bacheca Pubblica", type="primary", use_container_width=True):
+            st.session_state.wheel_result = None
+            st.rerun()
     else:
-        st.subheader(selected_area)
-        apps_in_area = AURASYNC_CATALOG[selected_area]
-        chosen_app = st.selectbox("Seleziona il modulo o il gioco desiderato:", apps_in_area)
-        st.info(f"Hai selezionato: **{chosen_app}**. Ambiente operativo pronto e sincronizzato.")
+        if selected_area == "🌐 Bacheca Pubblica":
+            st.title("🌐 Bacheca Pubblica AuraSync")
+            st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
+            
+            col_m1, col_m2 = st.columns(2)
+            with col_m1:
+                st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+            with col_m2:
+                st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+
+            st.divider()
+            st.subheader("📢 Ultime Notizie dalla Community")
+            st.info("• Aggiornamento v3.2 attivo: 150 moduli e giochi interattivi sbloccati!\n• Bacheca pubblica sincronizzata correttamente in modalità cloud PWA.")
+            
+            st.write("👉 *Usa il menu a scomparsa in alto a sinistra (tramite la freccia) per esplorare tutte le 150 applicazioni e i giochi.*")
+        else:
+            st.subheader(selected_area)
+            apps_in_area = AURASYNC_CATALOG[selected_area]
+            chosen_app = st.selectbox("Seleziona il modulo o il gioco desiderato:", apps_in_area)
+            st.info(f"Hai selezionato: **{chosen_app}**. Ambiente operativo pronto e sincronizzato.")
