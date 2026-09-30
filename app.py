@@ -17,7 +17,7 @@ if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
 if "wheel_result_val" not in st.session_state: st.session_state.wheel_result_val = None
 if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
 
-# CATALOGO DELLE 150 APPLICAZIONI (Ordinate per importanza)
+# CATALOGO COMPLETO DELLE 150 APPLICAZIONI (Ordinate per importanza)
 AURASYNC_CATALOG = {
     "🌐 Bacheca Pubblica": [
         "🌐 AuraFeed Community Wall", "⭐ Creator Hall of Fame", "🛒 Prompt & Template Market", "🛡️ Moderation Guard"
@@ -106,12 +106,20 @@ AURASYNC_CATALOG = {
 # --- FLUSSO PRINCIPALE ---
 
 if not st.session_state.tutorial_completed:
-    # 1. TUTORIAL (20 SECONDI)
-    st.title("📘 Guida Ufficiale ad AuraSync OS")
+    # 1. TUTORIAL SPECIFICO E DETTAGLIATO (20 SECONDI)
+    st.title("📘 Manuale Operativo Ufficiale - AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
-    st.write("Questa guida introduttiva illustra l'architettura della piattaforma e la gestione dei Gettoni d'Oro.")
     
-    st.info("⏳ **Il tutorial si chiuderà automaticamente tra 20 secondi** accreditando subito **3 Gettoni d'Oro** omaggio...")
+    st.write("""
+    Questo sistema è progettato per offrirti un controllo totale su **150 moduli avanzati, strumenti di IA e giochi interattivi**. 
+    Ecco come è strutturata la tua esperienza:
+    
+    * **🪙 Wallet e Gettoni d'Oro:** All'avvio riceverai gettoni omaggio che potrai incrementare tramite la Ruota della Fortuna per sbloccare funzionalità premium.
+    * **📂 Menu File e Moduli:** Cliccando sulle frecce in alto a destra `(>> 📁 Apri Menu File)` potrai accedere all'elenco completo suddiviso per categorie di importanza (dalla Core IA al Business, fino ai giochi).
+    * **🔍 Barra di Ricerca Interna:** All'interno del menu file troverai una barra di ricerca dedicata per trovare istantaneamente qualsiasi applicazione digitando una parola chiave.
+    """)
+    
+    st.info("⏳ **Il tutorial avanzato si chiuderà automaticamente tra 20 secondi** accreditando subito **3 Gettoni d'Oro** nel tuo wallet...")
 
     bar = st.progress(0)
     status_placeholder = st.empty()
@@ -206,15 +214,15 @@ else:
 
         st.divider()
         st.subheader("📢 Ultime Notizie dalla Community")
-        st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu ordinato con barra di ricerca interna.")
+        st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati nel database.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu ordinato con barra di ricerca interna.")
         
     else:
-        # --- MENU FILE E MODULI CON BARRA DI RICERCA INTERNA IN ALTO ---
-        st.header("📂 Menu File e Moduli (Pronti all'Uso)")
+        # --- MENU FILE E MODULI (TUTTI E 150) CON BARRA DI RICERCA INTERNA IN ALTO ---
+        st.header("📂 Menu File e Moduli (Tutti i 150 Pronti all'Uso)")
         st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙**")
         
         # BARRA DI RICERCA INTERNA
-        search_query = st.text_input("🔍 Cerca un file, modulo o gioco tra tutti i contenuti:", placeholder="Scrivi ad esempio 'Chat', 'Quiz', 'Budget'...")
+        search_query = st.text_input("🔍 Cerca tra tutte le 150 applicazioni e giochi:", placeholder="Scrivi ad esempio 'Game', 'Chat', 'Budget', 'Eco'...")
         
         st.divider()
 
@@ -227,6 +235,7 @@ else:
                         found_items.append((area, f))
             
             if found_items:
+                st.write(f"Trovati **{len(found_items)}** moduli corrispondenti:")
                 for area, file_name in found_items:
                     st.write(f"• **{file_name}** *(Area: {area})*")
                 chosen_search_file = st.selectbox("Seleziona il file trovato da avviare:", [item[1] for item in found_items])
