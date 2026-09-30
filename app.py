@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="AuraSync - Cognitive Operating System",
     page_icon="✨",
     layout="wide",
-    initial_sidebar_state="collapsed"  # Nascosto/Estraibile di default
+    initial_sidebar_state="collapsed"
 )
 
 # Inizializzazione dello State globale
@@ -15,9 +15,13 @@ if "tutorial_completed" not in st.session_state: st.session_state.tutorial_compl
 if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today = False
 if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
 if "wheel_result" not in st.session_state: st.session_state.wheel_result = None
+if "current_page" not in st.session_state: st.session_state.current_page = "🌐 Bacheca Pubblica"
 
-# CATALOGO COMPLETO DELLE 150 APPLICAZIONI (125 + 25 GIOCHI E QUIZ)
+# CATALOGO DELLE 150 APPLICAZIONI (Ordinate per importanza)
 AURASYNC_CATALOG = {
+    "🌐 Bacheca Pubblica": [
+        "🌐 AuraFeed Community Wall", "⭐ Creator Hall of Fame", "🛒 Prompt & Template Market", "🛡️ Moderation Guard"
+    ],
     "🧠 Area 1: Core IA & Produttività": [
         "1. AuraBot Universal Chat", "2. Branch Selector IA", "3. Voice & Persona Chameleon",
         "4. AuraTwin Predittivo", "5. Prompt Engineering Studio", "6. Smart Summarizer",
@@ -25,7 +29,20 @@ AURASYNC_CATALOG = {
         "10. Data Cleanse Tool", "11. Multi-Language Translator Hub", "12. Code Snippet Generator",
         "13. API Connector Studio", "14. Document Semantic Search", "15. Context Memory Vault"
     ],
-    "🌿 Area 2: Benessere, Fai-da-Te & Social": [
+    "🚀 Area 2: Business & Growth": [
+        "61. Pitch Deck Generator AI", "62. SWOT Matrix Analyzer", "63. Business Model Canvas Builder",
+        "64. Competitor Pricing Spy", "65. HR Interview Simulator", "66. OKR & KPI Goal Tracker",
+        "67. B2B Email Outreach Writer", "68. Legal Contract Draft AI", "69. Crowdfunding Campaign Planner",
+        "70. Brand Tone of Voice Designer"
+    ],
+    "💎 Area 3: Store, Wallet & Sicurezza": [
+        "46. Ruota della Fortuna Interattiva", "47. Streak & Habit Tracker", "48. Digital Pet Companion",
+        "49. Wallet Token Economy", "50. Stripe Checkout Integration", "51. Fair Use Policy Guard (FUP)",
+        "52. Aura Security Hub", "53. Age Verification Guard", "54. Admin Supreme Control Panel",
+        "55. AURA SOS Emergency Protocol", "56. PWA Offline Sync", "57. Data Privacy & GDPR Vault",
+        "58. User Feedback & Bug Reporter", "59. Onboarding Interactive Guide", "60. Custom Plugin Marketplace"
+    ],
+    "🌿 Area 4: Benessere, Fai-da-Te & Social": [
         "16. AuraGreen Leaf Analyzer", "17. Smart Watering Scheduler", "18. Botanic Disease Tracker",
         "19. AuraFix Hardware Diagnostic", "20. DIY Step-by-Step Guide", "21. Tool Inventory Manager",
         "22. AuraPets Paws Health", "23. Pet Nutrition Advisor", "24. Behavioral Pet Tracker",
@@ -35,25 +52,12 @@ AURASYNC_CATALOG = {
         "Social 3. Cross-Platform Video Script Writer", "Social 4. Social Calendar & Timing Optimizer",
         "Social 5. Competitor & Niche Analyzer"
     ],
-    "📖 Area 3: Famiglia, Memoria & Musica": [
+    "📖 Area 5: Famiglia, Memoria & Musica": [
         "31. Bedtime Story AI", "32. Moral Lesson Customizer", "33. Character Creator Studio",
-        "34. AuraSound Studio Lyrics (AI Lyricist)", "35. Melody & Binaural Generator", "36. Sleep & Focus Soundscapes",
+        "34. AuraSound Studio Lyrics", "35. Melody & Binaural Generator", "36. Sleep & Focus Soundscapes",
         "37. Time Capsule Cloud", "38. Family Memory Vault", "39. Future Letter Dispatcher",
         "40. Daily Gratitude Journal", "41. Mood Tracker Emotivo", "42. Creative Writing Companion",
         "43. Recipe & Cooking Assistant", "44. Event Planner Familiare", "45. Digital Scrapbook Creator"
-    ],
-    "💎 Area 4: Store, Wallet & Sicurezza": [
-        "46. Ruota della Fortuna Interattiva", "47. Streak & Habit Tracker", "48. Digital Pet Companion",
-        "49. Wallet Token Economy", "50. Stripe Checkout Integration", "51. Fair Use Policy Guard (FUP)",
-        "52. Aura Security Hub", "53. Age Verification Guard", "54. Admin Supreme Control Panel",
-        "55. AURA SOS Emergency Protocol", "56. PWA Offline Sync", "57. Data Privacy & GDPR Vault",
-        "58. User Feedback & Bug Reporter", "59. Onboarding Interactive Guide", "60. Custom Plugin Marketplace"
-    ],
-    "🚀 Area 5: Business & Growth": [
-        "61. Pitch Deck Generator AI", "62. SWOT Matrix Analyzer", "63. Business Model Canvas Builder",
-        "64. Competitor Pricing Spy", "65. HR Interview Simulator", "66. OKR & KPI Goal Tracker",
-        "67. B2B Email Outreach Writer", "68. Legal Contract Draft AI", "69. Crowdfunding Campaign Planner",
-        "70. Brand Tone of Voice Designer"
     ],
     "🎨 Area 6: Design & UI/UX": [
         "71. Color Palette Harmony AI", "72. UI/UX Wireframe Planner", "73. Logo Concept Generator",
@@ -82,12 +86,7 @@ AURASYNC_CATALOG = {
         "116. DIY Cosplay & Prop Planner", "117. Friends & Hangout Event Planner", "118. Digital Safety & Privacy Guardian",
         "119. DIY Photography & Reel Editor", "120. Dream & Goal Board for Teens"
     ],
-    "🌐 Area 10: Community & Public Wall": [
-        "121. AuraFeed Community Wall", "122. Creator Hall of Fame & Leaderboard",
-        "123. Public Prompt & Template Market", "124. Safe Community Moderation Guard",
-        "125. Collaborative Story & Song Jam"
-    ],
-    "🎮 Area 11: 25 Giochi e Quiz per Tutti": [
+    "🎮 Area 10: 25 Giochi e Quiz per Tutti": [
         "Game 1. Quiz di Cultura Generale IA", "Game 2. Rompicapo Logico Matematico",
         "Game 3. Indovina la Parola Segreta", "Game 4. Memory Test Cognitivo",
         "Game 5. Test di Intuito e Psicologia", "Game 6. Trivia su Cinema e Serie TV",
@@ -104,35 +103,15 @@ AURASYNC_CATALOG = {
     ]
 }
 
-# --- BARRA LATERALE ---
-with st.sidebar:
-    st.title("✨ Menu AuraSync")
-    if st.session_state.tutorial_completed and st.session_state.wheel_spun_today:
-        st.success("Sistema Sbloccato")
-        st.metric("Gettoni", f"{st.session_state.wallet_tokens} 🪙")
-        if st.button("Reset Sessione"):
-            st.session_state.tutorial_completed = False
-            st.session_state.wheel_spun_today = False
-            st.session_state.wallet_tokens = 0
-            st.session_state.wheel_result = None
-            st.rerun()
-        st.divider()
-        selected_area = st.radio("Seleziona Area e Moduli:", ["🌐 Bacheca Pubblica"] + list(AURASYNC_CATALOG.keys()))
-    else:
-        st.info("ℹ️ Completa il tutorial e gira la ruota per sbloccare il menu.")
-        selected_area = "🌐 Bacheca Pubblica"
-
-# --- FLUSSO SEQUENZIALE ---
+# --- FLUSSO SEQUENZIALE: 1. TUTORIAL (10 SEC) -> 2. RUOTA ROTONDA -> 3. DASHBOARD ---
 
 if not st.session_state.tutorial_completed:
-    # 1. TUTORIAL AUTOMATICO (10 SECONDI)
     st.title("📘 Guida Ufficiale ad AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
     st.write("Questa guida introduttiva illustra l'architettura della piattaforma e la gestione dei Gettoni d'Oro.")
     
     st.info("⏳ **Il tutorial si chiuderà automaticamente tra 10 secondi** accreditando subito **3 Gettoni d'Oro** omaggio...")
 
-    # Progress bar e testo dinamico per i 10 secondi
     bar = st.progress(0)
     status_placeholder = st.empty()
 
@@ -146,76 +125,109 @@ if not st.session_state.tutorial_completed:
     st.rerun()
 
 elif not st.session_state.wheel_spun_today:
-    # 2. RUOTA DELLA FORTUNA GRAFICA
-    st.title("🎡 Ruota della Fortuna Bonus")
-    st.write("Il tutorial è completato! Guarda i premi disponibili sulla ruota e tenta la fortuna per vincere crediti extra:")
+    st.title("🎡 Ruota della Fortuna Rotonda")
+    st.write("Il tutorial è completato! Fai girare la ruota rotonda per vincere i Gettoni d'Oro omaggio prima di accedere al menu principale.")
 
-    # Box grafici dei premi limitati (1, 2, 3, 5, 10 gettoni)
+    # HTML/CSS per la Ruota Rotonda con Animazione e Pulsante START
     st.markdown("""
     <style>
-    .wheel-container {
+    .wheel-outer {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin: 25px 0;
+        margin: 20px 0;
     }
-    .prize-card {
-        background: linear-gradient(135deg, #00c6ff, #0072ff);
-        color: white;
-        padding: 20px 25px;
-        border-radius: 12px;
-        font-size: 1.4em;
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .wheel-pointer {
+        width: 0; 
+        height: 0; 
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 25px solid #ff4b4b;
+        margin-bottom: -10px;
+        z-index: 10;
+    }
+    .wheel {
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        border: 8px solid #222;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        background: conic-gradient(
+            #00bcd4 0deg 72deg,
+            #4caf50 72deg 144deg,
+            #ffeb3b 144deg 216deg,
+            #ff9800 216deg 288deg,
+            #e91e63 288deg 360deg
+        );
+        transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
+    }
+    .wheel-label {
+        position: absolute;
+        width: 100%;
+        height: 100%;
         text-align: center;
-        border: 2px solid rgba(255,255,255,0.3);
+        font-weight: bold;
+        color: #111;
+        font-size: 1.1em;
     }
     </style>
-    <div class="wheel-container">
-        <div class="prize-card">1 🪙</div>
-        <div class="prize-card">2 🪙</div>
-        <div class="prize-card" style="background: linear-gradient(135deg, #ff4b4b, #ff8f00);">3 🪙</div>
-        <div class="prize-card">5 🪙</div>
-        <div class="prize-card">10 🪙</div>
+    <div class="wheel-outer">
+        <div class="wheel-pointer"></div>
+        <div id="fortuneWheel" class="wheel"></div>
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("🎁 Gira la Ruota Ora!", type="primary", use_container_width=True):
-        won = random.choice([1, 2, 3, 5, 10])
-        st.session_state.wallet_tokens += won
-        st.session_state.wheel_spun_today = True
-        st.session_state.wheel_result = won
-        st.balloons()
-        st.rerun()
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+    with col_btn2:
+        if st.button("🚀 START - Gira la Ruota!", type="primary", use_container_width=True):
+            won = random.choice([1, 2, 3, 5, 10])
+            st.session_state.wallet_tokens += won
+            st.session_state.wheel_spun_today = True
+            st.session_state.wheel_result = won
+            st.balloons()
+            st.rerun()
 
 else:
-    # 3. VISUALIZZAZIONE RISULTATO RUOTA E ACCESSO ALLA BACHECA PUBBLICA
     if st.session_state.wheel_result is not None:
         st.title("🎉 Risultato Ruota della Fortuna")
-        st.success(f"Complimenti! La ruota si è fermata su: **{st.session_state.wheel_result} Gettoni d'Oro**!")
-        st.write(f"Il tuo saldo totale aggiornato è di **{st.session_state.wallet_tokens} 🪙**.")
+        st.success(f"La ruota si è fermata con successo! Hai vinto **{st.session_state.wheel_result} Gettoni d'Oro**!")
+        st.write(f"Il tuo saldo totale nel portafoglio è di **{st.session_state.wallet_tokens} 🪙**.")
         
-        if st.button("🚀 Entra nella Bacheca Pubblica", type="primary", use_container_width=True):
+        if st.button("✨ Procedi al Menu Principale", type="primary", use_container_width=True):
             st.session_state.wheel_result = None
             st.rerun()
     else:
-        if selected_area == "🌐 Bacheca Pubblica":
-            st.title("🌐 Bacheca Pubblica AuraSync")
-            st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
-            
-            col_m1, col_m2 = st.columns(2)
-            with col_m1:
-                st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
-            with col_m2:
-                st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+        # --- MENU PRINCIPALE A PAGINA SEPARATA ORDINATO PER IMPORTANZA CON ICONE ---
+        st.title("✨ AuraSync OS - Menu Principale")
+        st.write(f"Benvenuto, utente autenticato! | Gettoni Disponibili: **{st.session_state.wallet_tokens} 🪙**")
+        st.divider()
 
-            st.divider()
-            st.subheader("📢 Ultime Notizie dalla Community")
-            st.info("• Aggiornamento v3.2 attivo: 150 moduli e giochi interattivi sbloccati!\n• Bacheca pubblica sincronizzata correttamente in modalità cloud PWA.")
-            
-            st.write("👉 *Usa il menu a scomparsa in alto a sinistra (tramite la freccia) per esplorare tutte le 150 applicazioni e i giochi.*")
-        else:
-            st.subheader(selected_area)
-            apps_in_area = AURASYNC_CATALOG[selected_area]
-            chosen_app = st.selectbox("Seleziona il modulo o il gioco desiderato:", apps_in_area)
-            st.info(f"Hai selezionato: **{chosen_app}**. Ambiente operativo pronto e sincronizzato.")
+        # Selezione dell'area tramite pulsanti in griglia ordinati per importanza
+        categories = list(AURASYNC_CATALOG.keys())
+        
+        st.subheader("📂 Seleziona un'Area del Sistema:")
+        
+        # Creiamo una griglia pulita con colonne
+        cols = st.columns(2)
+        for idx, cat in enumerate(categories):
+            with cols[idx % 2]:
+                if st.button(cat, use_container_width=True):
+                    st.session_state.current_page = cat
+                    st.rerun()
+
+        st.divider()
+        
+        # Mostriamo il contenuto dell'area selezionata
+        selected_cat = st.session_state.current_page
+        st.header(selected_cat)
+        
+        apps = AURASYNC_CATALOG[selected_cat]
+        chosen_app = st.selectbox("Seleziona lo strumento o modulo specifico:", apps)
+        st.info(f"Modulo attivo: **{chosen_app}**. Ambiente pronto per l'esecuzione.")
+        
+        if st.button("🏠 Torna alla Selezione delle Aree"):
+            st.session_state.current_page = "🌐 Bacheca Pubblica"
+            st.rerun()
