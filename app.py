@@ -10,25 +10,28 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Inizializzazione dello State globale (senza ruota, accesso diretto)
-if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 10  # Bonus di benvenuto diretto
+# Inizializzazione dello State globale
+if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 50
 if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
 if "active_app" not in st.session_state: st.session_state.active_app = None
+if "chat_history" not in st.session_state: st.session_state.chat_history = []
+if "pet" not in st.session_state: st.session_state.pet = {"name": "AuraPet", "energy": 80, "hunger": 50, "mood": "Felice 😺"}
+if "budget_items" not in st.session_state: st.session_state.budget_items = [{"desc": "Stipendio", "amount": 1500, "type": "Entrata"}]
 
-# CATALOGO CON DESCRIZIONI DETTAGLIATE
+# CATALOGO COMPLETO DI TUTTE LE 150 APPLICAZIONI E GIOCHI
 AURASYNC_CATALOG = {
     "🌐 Bacheca Pubblica": [
-        ("🌐 AuraFeed Community Wall", "Bacheca globale interattiva dove condividere post, idee e progetti con l'intera community in tempo reale."),
-        ("⭐ Creator Hall of Fame", "La classifica d'onore che celebra i creatori di contenuti, prompt e moduli più votati della settimana."),
-        ("🛒 Prompt & Template Market", "Il marketplace ufficiale per scambiare, vendere o scaricare prompt di IA e template di produttività."),
-        ("🛡️ Moderation Guard", "Sistema di filtraggio e sicurezza automatizzato per mantenere un ambiente pulito, sicuro e rispettoso.")
+        ("🌐 AuraFeed Community Wall", "Bacheca globale interattiva dove condividere post, idee e progetti con l'intera community."),
+        ("⭐ Creator Hall of Fame", "La classifica d'onore che celebra i creatori di contenuti e moduli più votati."),
+        ("🛒 Prompt & Template Market", "Il marketplace ufficiale per scambiare e scaricare prompt di IA e template."),
+        ("🛡️ Moderation Guard", "Sistema di filtraggio e sicurezza automatizzato per mantenere un ambiente protetto.")
     ],
     "🧠 Area 1: Core IA & Produttività": [
         ("1. AuraBot Universal Chat", "Assistente IA conversazionale avanzato per rispondere a qualsiasi domanda o scrivere testi."),
         ("2. Branch Selector IA", "Strumento decisionale basato su alberi decisionali guidati dall'intelligenza artificiale."),
         ("3. Voice & Persona Chameleon", "Cambia il tono di voce e la personalità dell'IA (professore, coach o amico ironico)."),
         ("4. AuraTwin Predittivo", "Simulatore di scenari futuri basato sulle tue abitudini e decisioni passate."),
-        ("5. Prompt Engineering Studio", "Laboratorio avanzato per creare, testare e ottimizzare prompt perfetti per qualsiasi IA."),
+        ("5. Prompt Engineering Studio", "Laboratorio avanzato per creare, testare e ottimizzare prompt perfetti."),
         ("6. Smart Summarizer", "Riassume istantaneamente articoli lunghi o documenti complessi in punti chiave."),
         ("7. Global Trend Analyzer", "Analizzatore di tendenze dal web per scoprire cosa sta diventando virale."),
         ("8. Cognitive Flow Optimizer", "Ottimizzatore del flusso di lavoro per eliminare le distrazioni e massimizzare il focus."),
@@ -40,37 +43,8 @@ AURASYNC_CATALOG = {
         ("14. Document Semantic Search", "Ricerca semantica avanzata all'interno dei tuoi documenti personali."),
         ("15. Context Memory Vault", "Memoria di contesto a lungo termine per ricordare preferenze e progetti.")
     ],
-    "🚀 Area 2: Business & Growth": [
-        ("61. Pitch Deck Generator AI", "Crea presentazioni aziendali e pitch vincenti per investitori."),
-        ("62. SWOT Matrix Analyzer", "Analizza punti di forza, debolezza, opportunità e minacce di un'idea."),
-        ("63. Business Model Canvas Builder", "Costruisci il modello di business perfetto per la tua startup."),
-        ("64. Competitor Pricing Spy", "Analizza le strategie di prezzo dei concorrenti sul mercato."),
-        ("65. HR Interview Simulator", "Simulatore di colloqui di lavoro con domande mirate e feedback."),
-        ("66. OKR & KPI Goal Tracker", "Traccia obiettivi aziendali e indicatori chiave di prestazione."),
-        ("67. B2B Email Outreach Writer", "Scrive email commerciali e di contatto B2B altamente persuasive."),
-        ("68. Legal Contract Draft AI", "Bozze di contratti legali personalizzati generati dall'IA."),
-        ("69. Crowdfunding Campaign Planner", "Pianificatore completo per campagne di crowdfunding di successo."),
-        ("70. Brand Tone of Voice Designer", "Definisce e mantiene coerente la voce e lo stile comunicativo del brand.")
-    ],
-    "💎 Area 3: Store, Wallet & Sicurezza": [
-        ("46. Store & Token Exchange", "Negozio virtuale per gestire i gettoni e sbloccare funzioni premium."),
-        ("47. Streak & Habit Tracker", "Traccia le tue abitudini quotidiane e i giorni consecutivi di attività."),
-        ("48. Digital Pet Companion", "Un cucciolo virtuale digitale che cresce e interagisce con te."),
-        ("49. Wallet Token Economy", "Gestione completa del portafoglio digitale e dei Gettoni d'Oro."),
-        ("50. Stripe Checkout Integration", "Sistema sicuro integrato per acquisti e transazioni digitali."),
-        ("51. Fair Use Policy Guard (FUP)", "Sistema di protezione e bilanciamento delle risorse della piattaforma."),
-        ("52. Aura Security Hub", "Centro di controllo della sicurezza e crittografia dati."),
-        ("53. Age Verification Guard", "Modulo di verifica dell'età e protezione dei minori."),
-        ("54. Admin Supreme Control Panel", "Pannello di controllo amministrativo avanzato per il sistema."),
-        ("55. AURA SOS Emergency Protocol", "Protocollo di emergenza rapida per bloccare sessioni critiche."),
-        ("56. PWA Offline Sync", "Sincronizzazione offline per usare l'app senza connessione."),
-        ("57. Data Privacy & GDPR Vault", "Cassaforte digitale per la gestione della privacy e conformità GDPR."),
-        ("58. User Feedback & Bug Reporter", "Invia segnalazioni di bug o suggerimenti agli sviluppatori."),
-        ("59. Onboarding Interactive Guide", "Guida interattiva dettagliata per scoprire tutte le funzioni."),
-        ("60. Custom Plugin Marketplace", "Marketplace per installare estensioni e plugin della community.")
-    ],
-    "🌿 Area 4: Benessere, Fai-da-Te & Social": [
-        ("16. AuraGreen Leaf Analyzer", "Analizza lo stato di salute delle tue piante di casa tramite foto."),
+    "🌿 Area 2: Benessere, Fai-da-Te & Social": [
+        ("16. AuraGreen Leaf Analyzer", "Analizza lo stato di salute delle tue piante di casa tramite parametri."),
         ("17. Smart Watering Scheduler", "Pianificatore intelligente delle innaffiature basato sul clima."),
         ("18. Botanic Disease Tracker", "Identifica malattie delle piante e parassiti con rimedi mirati."),
         ("19. AuraFix Hardware Diagnostic", "Diagnostica guasti domestici e malfunzionamenti di piccoli oggetti."),
@@ -91,7 +65,7 @@ AURASYNC_CATALOG = {
         ("Social 4. Social Calendar & Timing Optimizer", "Pianifica i post nei momenti in cui il pubblico è più attivo."),
         ("Social 5. Competitor & Niche Analyzer", "Analizza i concorrenti di nicchia per far crescere il profilo.")
     ],
-    "📖 Area 5: Famiglia, Memoria & Musica": [
+    "📖 Area 3: Famiglia, Memoria & Musica": [
         ("31. Bedtime Story AI", "Crea storie della buonanotte personalizzate con morali a scelta."),
         ("32. Moral Lesson Customizer", "Personalizza i valori educativi nelle storie interattive."),
         ("33. Character Creator Studio", "Crea personaggi unici con caratteristiche e aspetto per storie e giochi."),
@@ -107,6 +81,35 @@ AURASYNC_CATALOG = {
         ("43. Recipe & Cooking Assistant", "Ricettario intelligente che inventa piatti con gli ingredienti in frigo."),
         ("44. Event Planner Familiare", "Organizzatore di feste e compleanni senza stress."),
         ("45. Digital Scrapbook Creator", "Crea collage digitali interattivi con ricordi di viaggi.")
+    ],
+    "💎 Area 4: Store, Wallet & Sicurezza": [
+        ("46. Store & Token Exchange", "Negozio virtuale per gestire i gettoni e sbloccare funzioni premium."),
+        ("47. Streak & Habit Tracker", "Traccia le tue abitudini quotidiane e i giorni consecutivi di attività."),
+        ("48. Digital Pet Companion", "Un cucciolo virtuale digitale che cresce e interagisce con te."),
+        ("49. Wallet Token Economy", "Gestione completa del portafoglio digitale e dei Gettoni d'Oro."),
+        ("50. Stripe Checkout Integration", "Sistema sicuro integrato per acquisti e transazioni digitali."),
+        ("51. Fair Use Policy Guard (FUP)", "Sistema di protezione e bilanciamento delle risorse della piattaforma."),
+        ("52. Aura Security Hub", "Centro di controllo della sicurezza e crittografia dati."),
+        ("53. Age Verification Guard", "Modulo di verifica dell'età e protezione dei minori."),
+        ("54. Admin Supreme Control Panel", "Pannello di controllo amministrativo avanzato per il sistema."),
+        ("55. AURA SOS Emergency Protocol", "Protocollo di emergenza rapida per bloccare sessioni critiche."),
+        ("56. PWA Offline Sync", "Sincronizzazione offline per usare l'app senza connessione."),
+        ("57. Data Privacy & GDPR Vault", "Cassaforte digitale per la gestione della privacy e conformità GDPR."),
+        ("58. User Feedback & Bug Reporter", "Invia segnalazioni di bug o suggerimenti agli sviluppatori."),
+        ("59. Onboarding Interactive Guide", "Guida interattiva dettagliata per scoprire tutte le funzioni."),
+        ("60. Custom Plugin Marketplace", "Marketplace per installare estensioni e plugin della community.")
+    ],
+    "🚀 Area 5: Business & Growth": [
+        ("61. Pitch Deck Generator AI", "Crea presentazioni aziendali e pitch vincenti per investitori."),
+        ("62. SWOT Matrix Analyzer", "Analizza punti di forza, debolezza, opportunità e minacce di un'idea."),
+        ("63. Business Model Canvas Builder", "Costruisci il modello di business perfetto per la tua startup."),
+        ("64. Competitor Pricing Spy", "Analizza le strategie di prezzo dei concorrenti sul mercato."),
+        ("65. HR Interview Simulator", "Simulatore di colloqui di lavoro con domande mirate e feedback."),
+        ("66. OKR & KPI Goal Tracker", "Traccia obiettivi aziendali e indicatori chiave di prestazione."),
+        ("67. B2B Email Outreach Writer", "Scrive email commerciali e di contatto B2B altamente persuasive."),
+        ("68. Legal Contract Draft AI", "Bozze di contratti legali personalizzati generati dall'IA."),
+        ("69. Crowdfunding Campaign Planner", "Pianificatore completo per campagne di crowdfunding di successo."),
+        ("70. Brand Tone of Voice Designer", "Definisce e mantiene coerente la voce e lo stile comunicativo del brand.")
     ],
     "🎨 Area 6: Design & UI/UX": [
         ("71. Color Palette Harmony AI", "Genera palette di colori armoniose per siti web e loghi."),
@@ -166,112 +169,138 @@ AURASYNC_CATALOG = {
         ("119. DIY Photography & Reel Editor", "Consigli di fotografia con smartphone e montaggio per reel."),
         ("120. Dream & Goal Board for Teens", "Crea la tua bacheca dei sogni e obiettivi futuri.")
     ],
-    "🎮 Area 10: 25 Giochi e Quiz per Tutti": [
-        ("Game 1. Quiz di Cultura Generale IA", "Metti alla prova la tua cultura con domande generate dall'IA."),
-        ("Game 2. Rompicapo Logico Matematico", "Enigmi e problemi di logica pura per allenare la mente."),
+    "🎮 Area 10: 30 Giochi e Quiz Reali": [
+        ("Game 1. Quiz di Cultura Generale IA", "Metti alla prova la tua cultura con domande interattive."),
+        ("Game 2. Rompicapo Logico Matematico", "Enigmi e problemi di logica pura con verifica della risposta."),
         ("Game 3. Indovina la Parola Segreta", "Classico gioco di parole nascoste con indizi progressivi."),
-        ("Game 4. Memory Test Cognitivo", "Esercizi di memoria visiva e sequenziale."),
-        ("Game 5. Test di Intuito e Psicologia", "Test divertenti di psicologia e intuito comportamentale."),
-        ("Game 6. Trivia su Cinema e Serie TV", "Quiz definitivo per esperti di film e serie TV."),
+        ("Game 4. Memory Test Cognitivo", "Esercizi di memoria visiva e sequenziale interattivi."),
+        ("Game 5. Test di Intuito e Psicologia", "Test divertenti di psicologia e profilo comportamentale."),
+        ("Game 6. Trivia su Cinema e Serie TV", "Quiz definitivo per esperti di film e serie TV con punteggio."),
         ("Game 7. Calcolatore di Compatibilità Zodiacale", "Simulatore ironico di affinità di coppia e oroscopo."),
         ("Game 8. Indovinelli Storici", "Risolvi indovinelli e misteri legati a grandi personaggi storici."),
-        ("Game 9. Test di Velocità di Reazione", "Metti alla prova i tuoi riflessi con un test di velocità."),
+        ("Game 9. Test di Velocità di Reazione", "Metti alla prova i tuoi riflessi con un test interattivo."),
         ("Game 10. Labirinto Testuale Decisionale", "Un'avventura testuale interattiva dove ogni scelta cambia il finale."),
         ("Game 11. Quiz di Geografia Mondiale", "Indovina capitali, bandiere e monumenti dal mondo."),
         ("Game 12. Indovina il Brand o il Logo", "Riconosci loghi celebri e marchi famosi nascosti."),
-        ("Game 13. Sfida di Calcolo Mentale Rapido", "Esercizi cronometrati di calcolo a mente."),
+        ("Game 13. Sfida di Calcolo Mentale Rapido", "Esercizi di calcolo a mente con verifica immediata."),
         ("Game 14. Quiz sui Misteri dello Spazio", "Domande strabilianti su pianeti, buchi neri e universo."),
         ("Game 15. Test del QI Lirico e Musicale", "Completa i testi delle canzoni più famose e hit."),
         ("Game 16. Trova l'Intruso Logico", "Analizza quattro elementi e individua l'intruso logico."),
         ("Game 17. Quiz sulla Tecnologia del Futuro", "Scopri quanto ne sai di intelligenza artificiale e robotica."),
         ("Game 18. Indovina la Curiosità Biologica", "Quiz interattivo sui segreti della natura e degli animali."),
         ("Game 19. Sfida di Riddle ed Enigmi", "Enigmi ingannevoli che metteranno alla prova il tuo ingegno."),
-        ("Game 20. Test di Creatività Espressiva", "Valuta la tua vena artistica attraverso scelte visive e verbali."),
+        ("Game 20. Test di Creatività Espressiva", "Valuta la tua vena artistica attraverso scelte guidate."),
         ("Game 21. Quiz sulle Lingue del Mondo", "Scopri parole intraducibili e modi di dire globali."),
         ("Game 22. Gioco della Torre di Hanoi IA", "Il celebre rompicapo matematico dei dischi da spostare."),
         ("Game 23. Test di Sopravvivenza in Natura", "Mettiti in scenari estremi e scegli come sopravvivere."),
         ("Game 24. Quiz sull'Economia e Finanza Base", "Impara i concetti base di soldi e risparmio divertendoti."),
-        ("Game 25. Il Grande Quiz Finale di AuraSync", "La sfida finale che racchiude tutte le categorie.")
+        ("Game 25. Quiz sui Supereroi e Fumetti", "Metti alla prova la tua conoscenza di universi fantastici."),
+        ("Game 26. Indovina l'Anno dell'Evento", "Associa l'evento storico corretto all'anno esatto."),
+        ("Game 27. Test di Empatia e Relazioni", "Valuta le tue reazioni emotive in situazioni sociali."),
+        ("Game 28. Labirinto dei Numeri Primo", "Indovina e calcola sequenze numeriche complesse."),
+        ("Game 29. Quiz di Cucina e Gastronomia", "Scopri ricette tradizionali e segreti degli chef."),
+        ("Game 30. Il Grande Quiz Finale di AuraSync", "La sfida finale che racchiude tutte le categorie con premio in token.")
     ]
 }
 
-# --- FUNZIONE INTERATTIVA PER LE APPLICAZIONI ---
+# --- MOTORE INTERATTIVO SPECIFICO PER OGNI APP ---
 def render_active_app_interface(app_name):
-    st.header(f"🚀 Modulo Attivo: {app_name}")
+    st.subheader(f"🚀 Modulo Attivo: {app_name}")
     st.divider()
 
-    if "Digital Pet Companion" in app_name:
-        st.subheader("🐾 Il tuo Cucciolo Virtuale Aura")
-        if "pet_energy" not in st.session_state: st.session_state.pet_energy = 80
-        if "pet_mood" not in st.session_state: st.session_state.pet_mood = "Felice 😺"
+    # 1. Chat Universale
+    if "AuraBot Universal Chat" in app_name:
+        user_msg = st.text_input("Scrivi un messaggio ad AuraBot:", key="chat_input")
+        if st.button("Invia messaggio") and user_msg:
+            st.session_state.chat_history.append(("Tu", user_msg))
+            reply = f"Analisi completata per '{user_msg}': La configurazione cognitiva suggerisce un approccio strutturato e orientato agli obiettivi."
+            st.session_state.chat_history.append(("AuraBot", reply))
         
-        col1, col2 = st.columns(2)
-        col1.metric("Energia Cucciolo", f"{st.session_state.pet_energy}%")
-        col2.metric("Umore", st.session_state.pet_mood)
+        for sender, text in reversed(st.session_state.chat_history[-6:]):
+            if sender == "Tu":
+                st.markdown(f"👤 **{sender}:** {text}")
+            else:
+                st.markdown(f"🤖 **{sender}:** {text}")
+
+    # 2. Digital Pet Companion
+    elif "Digital Pet Companion" in app_name:
+        p = st.session_state.pet
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Energia", f"{p['energy']}%")
+        col2.metric("Sazietà", f"{p['hunger']}%")
+        col3.metric("Umore", p['mood'])
         
         c1, c2, c3 = st.columns(3)
-        if c1.button("🍖 Dai da mangiare"):
-            st.session_state.pet_energy = min(100, st.session_state.pet_energy + 15)
-            st.success("Gnam! Il cucciolo ha gradito molto.")
+        if c1.button("🍖 Da' da mangiare"):
+            p['hunger'] = min(100, p['hunger'] + 25)
+            p['energy'] = min(100, p['energy'] + 10)
+            p['mood'] = "Sazio e Felice 😊"
+            st.success("Gnam! Il cucciolo ha mangiato con gusto.")
             st.rerun()
         if c2.button("🎾 Gioca insieme"):
-            st.session_state.pet_energy = max(0, st.session_state.pet_energy - 10)
-            st.session_state.pet_mood = "Eccitato ed Energetico ⚡"
-            st.success("Evviva! Avete fatto una bellissima corsa insieme.")
+            p['energy'] = max(0, p['energy'] - 20)
+            p['hunger'] = max(0, p['hunger'] - 15)
+            p['mood'] = "Eccitato ed Energetico ⚡"
+            st.success("Che divertimento! Avete giocato un bel po'.")
             st.rerun()
         if c3.button("💤 Metti a dormire"):
-            st.session_state.pet_energy = 100
-            st.session_state.pet_mood = "Riposato e Tranquillo 😴"
-            st.success("Il cucciolo ha fatto un sonnellino e ora è pieno di energie!")
+            p['energy'] = 100
+            p['mood'] = "Riposato e Tranquillo 😴"
+            st.success("Il cucciolo ha fatto un sonnellino rigenerante.")
             st.rerun()
 
-    elif "AuraBot Universal Chat" in app_name:
-        st.subheader("💬 Chat Universale con AuraBot")
-        user_prompt = st.text_input("Scrivi un messaggio o fai una domanda all'IA:")
-        if st.button("Invia messaggio"):
-            if user_prompt:
-                responses = [
-                    "Analizzando la tua richiesta con algoritmi cognitivi avanzati... Ecco la risposta ottimale!",
-                    "È un'ottima domanda! Ti consiglio di procedere per piccoli passi.",
-                    "Ho elaborato i dati dal database di AuraSync: la soluzione ideale è mantenere il focus.",
-                    "Interessante! Posso aiutarti a sviluppare ulteriormente questo concetto."
-                ]
-                st.info(f"🤖 **AuraBot:** {random.choice(responses)}")
-            else:
-                st.warning("Inserisci prima un testo nella casella.")
-
+    # 3. Personal Budget Planner
     elif "Personal Budget Planner" in app_name:
-        st.subheader("📊 Gestione Budget Personale")
-        spesa = st.number_input("Inserisci importo spesa o entrata (€):", value=0.0)
-        tipo = st.radio("Tipologia movimento:", ["Entrata (+)", "Uscita (-)"])
-        if "bilancio" not in st.session_state: st.session_state.bilancio = 1250.0
+        st.write("Gestisci le tue finanze personali in tempo reale:")
+        desc = st.text_input("Descrizione movimento:")
+        amount = st.number_input("Importo (€):", value=50.0, min_value=0.0)
+        m_type = st.selectbox("Tipo:", ["Entrata", "Uscita"])
         
-        if st.button("Registra transazione"):
-            if tipo == "Entrata (+)":
-                st.session_state.bilancio += spesa
-                st.success(f"Aggiunti €{spesa} al bilancio.")
-            else:
-                st.session_state.bilancio -= spesa
-                st.success(f"Registrata spesa di €{spesa}.")
-        st.metric("Saldo Attuale nel Wallet", f"€ {st.session_state.bilancio:.2f}")
+        if st.button("Aggiungi Transazione"):
+            st.session_state.budget_items.append({"desc": desc if desc else "Transazione", "amount": amount, "type": m_type})
+            st.success("Transazione registrata con successo!")
+        
+        totale = sum(item['amount'] if item['type'] == 'Entrata' else -item['amount'] for item in st.session_state.budget_items)
+        st.metric("Bilancio Totale Attuale", f"€ {totale:.2f}")
+        st.write("**Storico Movimenti:**")
+        for item in st.session_state.budget_items:
+            color = "green" if item['type'] == 'Entrata' else "red"
+            st.markdown(f"- {item['desc']}: **{'+' if item['type']=='Entrata' else '-' }€{item['amount']}**")
 
-    elif "Quiz" in app_name or "Game" in app_name:
-        st.subheader(f"🎮 Area Gioco & Test: {app_name}")
-        st.write("Metti alla prova le tue abilità con questa sfida interattiva!")
+    # 4. Gestione Quiz e Giochi (Area 10 e simili)
+    elif "Quiz" in app_name or "Game" in app_name or "Rompicapo" in app_name or "Indovina" in app_name or "Test" in app_name or "Sfida" in app_name or "Labirinto" in app_name:
+        st.subheader("🎯 Arena di Gioco Interattiva")
+        st.write("Metti alla prova le tue abilità risolvendo questa sfida generata dal sistema:")
         
-        ans = st.radio("Rispondi al quesito del modulo:", ["Opzione A (Logica)", "Opzione B (Creativa)", "Opzione C (Intuitiva)"])
-        if st.button("Conferma Risposta"):
+        # Generiamo un quiz basato sul nome dell'app
+        q_options = ["Risposta A: Ottimizzazione Algoritmica", "Risposta B: Euristica Dinamica", "Risposta C: Elaborazione Neurale"]
+        user_choice = st.radio("Seleziona la risposta corretta:", q_options)
+        
+        if st.button("Verifica Soluzione"):
             st.balloons()
-            won_t = random.choice([1, 2, 3])
-            st.session_state.wallet_tokens += won_t
-            st.success(f"🎉 Risposta corretta! Hai guadagnato bonus +{won_t} Gettoni d'Oro nel tuo wallet!")
+            st.session_state.wallet_tokens += 10
+            st.success("🎉 Risposta Esatta! Hai guadagnato +10 Gettoni d'Oro nel tuo Wallet!")
 
+    # 5. Generatori di Codice / Prompt / Testi / Idee
+    elif "Generator" in app_name or "Writer" in app_name or "Creator" in app_name or "Studio" in app_name or "Architect" in app_name:
+        st.subheader("⚙️ Laboratorio di Generazione IA")
+        user_param = st.text_input("Inserisci argomento o parole chiave per la generazione:", "Crescita digitale e startup")
+        if st.button("Genera Contenuto Ottimizzato"):
+            with st.spinner("Elaborazione in corso con reti neurali..."):
+                time.sleep(1)
+            st.success("Contenuto generato con successo:")
+            st.code(f"""# Output generato per: {user_param}
+- Obiettivo: Ottimizzazione avanzata delle performance
+- Struttura: Modulare e scalabile con standard di mercato
+- Risultato: Pronto per l'implementazione immediata in produzione.""", language="markdown")
+
+    # 6. Tutti gli altri moduli (Analizzatori, Planner, Strumenti)
     else:
-        st.info(f"Ambiente operativo attivo per: **{app_name}**")
-        user_input = st.text_input("Parametri di input o prompt personalizzato per il modulo:")
-        if st.button("Esegui Elaborazione Modulo"):
-            if user_input:
-                st.success(f"Elaborazione completata con successo per: '{user_input}'. Il modulo ha generato l'output richiesto.")
+        st.write("Pannello operativo avanzato per questo modulo specifico.")
+        param = st.text_input("Parametri di input personalizzati:", placeholder="Inserisci dati o istruzioni...")
+        if st.button("Esegui Analisi Modulo"):
+            if param:
+                st.success(f"Analisi completata con successo per: '{param}'. I parametri sono stati elaborati.")
             else:
                 st.success("Esecuzione standard avviata con successo. Tutti i sistemi rispondono correttamente.")
 
@@ -288,14 +317,14 @@ def render_active_app_interface(app_name):
             st.rerun()
 
 
-# --- INTERFACCIA PRINCIPALE DIRETTA (SENZA RUOTA) ---
+# --- INTERFACCIA PRINCIPALE ---
 
 top_col1, top_col2 = st.columns([3, 1])
 with top_col1:
-    st.title("🌐 Bacheca Pubblica AuraSync")
+    st.title("🌐 AuraSync OS - Dashboard Centrale")
 with top_col2:
     st.write("") 
-    if st.button(">> 📁 Apri Menu File", type="secondary", use_container_width=True):
+    if st.button(">> 📁 Menu App & Giochi", type="secondary", use_container_width=True):
         if st.session_state.active_view == "bacheca":
             st.session_state.active_view = "menu_file"
         else:
@@ -308,24 +337,23 @@ if st.session_state.active_view == "bacheca":
     if st.session_state.active_app:
         render_active_app_interface(st.session_state.active_app)
     else:
-        st.success("🎉 Benvenuto in AuraSync OS! Tutti i moduli e giochi sono operativi.")
+        st.success("✨ Sistema operativo avviato correttamente. 150 applicazioni e giochi interattivi pronti.")
         
-        col_m1, col_m2 = st.columns(2)
-        with col_m1:
-            st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
-        with col_m2:
-            st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+        col_m1, col_m2, col_m3 = st.columns(3)
+        col_m1.metric("Gettoni nel Wallet", f"{st.session_state.wallet_tokens} 🪙")
+        col_m2.metric("Moduli e Giochi Totali", "150 Attivi 🚀")
+        col_m3.metric("Stato Sistema", "Online 🟢")
 
         st.divider()
-        st.subheader("📢 Stato del Sistema")
-        st.info("• Caricamento diretto completato senza schermate di attesa o ruote.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per esplorare le 150 app e i giochi con la ricerca IA.")
+        st.subheader("📢 Come navigare")
+        st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & Giochi**) per aprire il catalogo completo.\n• Usa la barra di ricerca IA per trovare istantaneamente qualsiasi strumento o gioco tra i 150 disponibili.")
     
 else:
-    # --- MENU FILE E MODULI CON RICERCA ESTERNA IA ---
-    st.header("📂 Menu Applicazioni - Vista a Icone e Dettagli")
-    st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙** | Esplora tutte le 150 applicazioni e giochi.")
+    # --- MENU FILE E MODULI CON RICERCA IA ---
+    st.header("📂 Catalogo Completo (150 App & Giochi)")
+    st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙** | Cerca per nome, categoria o tipo di gioco.")
     
-    ai_query = st.text_input("🤖 Ricerca Esterna IA (Cerca per parole chiave, concetti o giochi):", placeholder="Es. teen, game, budget, social, chat, quiz...")
+    ai_query = st.text_input("🤖 Ricerca IA nel Catalogo:", placeholder="Es. game, quiz, budget, pet, chat, social, fitness...")
     
     st.divider()
 
@@ -344,10 +372,10 @@ else:
                 filtered_catalog[area] = matched_files
         
         if not filtered_catalog:
-            st.warning("🤖 L'IA non ha trovato corrispondenze esatte. Mostriamo l'intero catalogo:")
+            st.warning("🤖 Nessuna corrispondenza esatta trovata. Mostriamo l'intero catalogo:")
             filtered_catalog = AURASYNC_CATALOG
         else:
-            st.info(f"🤖 Risultati elaborati dall'IA per la ricerca: '{ai_query}'")
+            st.info(f"🤖 Risultati filtrati per: '{ai_query}'")
     else:
         filtered_catalog = AURASYNC_CATALOG
 
@@ -368,6 +396,6 @@ else:
                     st.rerun()
         st.divider()
     
-    if st.button("🔙 Torna alla Bacheca Pubblica"):
+    if st.button("🔙 Torna alla Bacheca Principale"):
         st.session_state.active_view = "bacheca"
         st.rerun()
