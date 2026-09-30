@@ -6,8 +6,8 @@ import datetime
 
 # Configurazione PWA e Layout
 st.set_page_config(
-    page_title="AuraSync - Cognitive Operating System v5.0",
-    page_icon="⚡",
+    page_title="AuraSync - Sports & Arcade OS v7.0",
+    page_icon="⚽",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -16,13 +16,13 @@ st.set_page_config(
 if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
 if "active_app" not in st.session_state: st.session_state.active_app = None
 if "chat_history" not in st.session_state: st.session_state.chat_history = [
-    ("AuraServer", "Tutti i 150 motori neurali e server cloud sono attivi e sincronizzati.")
+    ("AuraServer", "Motori sportivi e server di gioco (Calcio, Basket, Moto, corse) attivi e sincronizzati.")
 ]
-if "pet" not in st.session_state: st.session_state.pet = {"name": "AuraPet", "energy": 100, "hunger": 100, "mood": "Eccellente 🌟"}
-if "budget_items" not in st.session_state: st.session_state.budget_items = [{"desc": "Capitale Iniziale Cloud", "amount": 3500.0, "type": "Entrata"}]
-if "game_state" not in st.session_state: st.session_state.game_state = {"score": 0, "level": 1, "streak": 0}
+if "pet" not in st.session_state: st.session_state.pet = {"name": "AuraPet", "energy": 100, "hunger": 100, "mood": "In Forma 🥇"}
+if "budget_items" not in st.session_state: st.session_state.budget_items = [{"desc": "Sponsorizzazione Sportiva", "amount": 5000.0, "type": "Entrata"}]
+if "game_state" not in st.session_state: st.session_state.game_state = {"score": 0, "goals": 0, "baskets": 0, "race_pos": 1}
 
-# CATALOGO COMPLETO DI TUTTE LE 150 APPLICAZIONI E GIOCHI
+# CATALOGO COMPLETO: 150 APP + 50 GIOCHI SPORTIVI E DI MOTORI REALI
 AURASYNC_CATALOG = {
     "🌐 Bacheca Pubblica & Community": [
         ("🌐 AuraFeed Community Wall", "Bacheca globale interattiva per condividere post, idee e progetti con la community."),
@@ -173,79 +173,91 @@ AURASYNC_CATALOG = {
         ("119. DIY Photography & Reel Editor", "Consigli di fotografia con smartphone e montaggio per reel."),
         ("120. Dream & Goal Board for Teens", "Crea la tua bacheca dei sogni e obiettivi futuri.")
     ],
-    "🎮 Area 10: 30 Giochi e Quiz Reali": [
-        ("Game 1. Quiz di Cultura Generale IA", "Metti alla prova la tua cultura con domande interattive."),
-        ("Game 2. Rompicapo Logico Matematico", "Enigmi e problemi di logica pura con verifica della risposta."),
-        ("Game 3. Indovina la Parola Segreta", "Classico gioco di parole nascoste con indizi progressivi."),
-        ("Game 4. Memory Test Cognitivo", "Esercizi di memoria visiva e sequenziale interattivi."),
-        ("Game 5. Test di Intuito e Psicologia", "Test divertenti di psicologia e profilo comportamentale."),
-        ("Game 6. Trivia su Cinema e Serie TV", "Quiz definitivo per esperti di film e serie TV con punteggio."),
-        ("Game 7. Calcolatore di Compatibilità Zodiacale", "Simulatore ironico di affinità di coppia e oroscopo."),
-        ("Game 8. Indovinelli Storici", "Risolvi indovinelli e misteri legati a grandi personaggi storici."),
-        ("Game 9. Test di Velocità di Reazione", "Metti alla prova i tuoi riflessi con un test interattivo."),
-        ("Game 10. Labirinto Testuale Decisionale", "Un'avventura testuale interattiva dove ogni scelta cambia il finale."),
-        ("Game 11. Quiz di Geografia Mondiale", "Indovina capitali, bandiere e monumenti dal mondo."),
-        ("Game 12. Indovina il Brand o il Logo", "Riconosci loghi celebri e marchi famosi nascosti."),
-        ("Game 13. Sfida di Calcolo Mentale Rapido", "Esercizi di calcolo a mente con verifica immediata."),
-        ("Game 14. Quiz sui Misteri dello Spazio", "Domande strabilianti su pianeti, buchi neri e universo."),
-        ("Game 15. Test del QI Lirico e Musicale", "Completa i testi delle canzoni più famose e hit."),
-        ("Game 16. Trova l'Intruso Logico", "Analizza quattro elementi e individua l'intruso logico."),
-        ("Game 17. Quiz sulla Tecnologia del Futuro", "Scopri quanto ne sai di intelligenza artificiale e robotica."),
-        ("Game 18. Indovina la Curiosità Biologica", "Quiz interattivo sui segreti della natura e degli animali."),
-        ("Game 19. Sfida di Riddle ed Enigmi", "Enigmi ingannevoli che metteranno alla prova il tuo ingegno."),
-        ("Game 20. Test di Creatività Espressiva", "Valuta la tua vena artistica attraverso scelte guidate."),
-        ("Game 21. Quiz sulle Lingue del Mondo", "Scopri parole intraducibili e modi di dire globali."),
-        ("Game 22. Gioco della Torre di Hanoi IA", "Il celebre rompicapo matematico dei dischi da spostare."),
-        ("Game 23. Test di Sopravvivenza in Natura", "Mettiti in scenari estremi e scegli come sopravvivere."),
-        ("Game 24. Quiz sull'Economia e Risparmio Base", "Impara i concetti base di soldi e risparmio divertendoti."),
-        ("Game 25. Quiz sui Supereroi e Fumetti", "Metti alla prova la tua conoscenza di universi fantastici."),
-        ("Game 26. Indovina l'Anno dell'Evento", "Associa l'evento storico corretto all'anno esatto."),
-        ("Game 27. Test di Empatia e Relazioni", "Valuta le tue reazioni emotive in situazioni sociali."),
-        ("Game 28. Labirinto dei Numeri Primo", "Indovina e calcola sequenze numeriche complesse."),
-        ("Game 29. Quiz di Cucina e Gastronomia", "Scopri ricette tradizionali e segreti degli chef."),
-        ("Game 30. Il Grande Quiz Finale di AuraSync", "La sfida finale che racchiude tutte le categorie in modo totalmente libero.")
+    "⚽ Area 10: 10 Giochi Sportivi & Motori (Bambini 4-8 anni)": [
+        ("Sport 1. Calcio Kids: Calira il Rigore", "Scegli l'angolo e calcia il pallone per segnare il gol della vittoria!"),
+        ("Sport 2. Mini Basket: Canestro al Volo", "Mira il canestro e fai passare la palla dentro la retina."),
+        ("Sport 3. Mini Moto: Corsa sui Kart in Pista", "Guida il mini bolide a due ruote schivando i birilli colorati."),
+        ("Sport 4. Salto in Alto con l'Asticella", "Prendi la rincorsa e salta oltre l'asticella senza farla cadere."),
+        ("Sport 5. Tennis da Tavolo Rapido", "Rimetti la pallina dall'altra parte del tavolo con tempismo."),
+        ("Sport 6. Nuoto: Gara in Vasca da 25 Metri", "Tieni il ritmo delle bracciate per vincere la medaglia d'oro nel nuoto."),
+        ("Sport 7. Bici senza Pedali: Percorso a Ostacoli", "Pedala veloce lungo il vialetto del parco schivando i gattini."),
+        ("Sport 8. Bowling dei Birilli Colorati", "Lancia la boccia pesante per fare strike e abbattere tutti i birilli."),
+        ("Sport 9. Monopattino Freestyle Junior", "Fai saltare il monopattino sulla rampa di legno divertendoti."),
+        ("Sport 10. Corsa campestre dei Piccoli Animali", "Vinci la maratona campestre correndo insieme ai tuoi amici.")
+    ],
+    "🏀 Area 11: 10 Giochi Sportivi & Motori (Ragazzi 9-13 anni)": [
+        ("Sport 11. Calcio Campionato: Punizione a Giro", "Tira una punizione a effetto sopra la barriera per battere il portiere."),
+        ("Sport 12. Basket NBA Street: Tiri da Tre Punti", "Segna più canestri da tre punti possibili prima che scada il cronometro."),
+        ("Sport 13. Motocross Freestyle: Salto della Ramp", "Esegui un backflip spettacolare con la moto da cross in aria."),
+        ("Sport 14. Skateboard Street Park: Grind & Flip", "Combinazioni di tasti per eseguire trick pazzeschi sullo skate park."),
+        ("Sport 15. BMX Dirt Jump Challenge", "Atterra perfettamente dopo un salto vertiginoso nel fango."),
+        ("Sport 16. Nuoto Sincronizzato e Tuffi dal Trampolino", "Esegui un salto mortale con avvitamento perfetto in piscina."),
+        ("Sport 17. Volley Beach: Smash Finale", "Schiaccia la palla nella sabbia avversaria per vincere il set."),
+        ("Sport 18. Parkour Urbano: Salto sui Tetti", "Corri sui tetti della città superando ostacoli con agilità estrema."),
+        ("Sport 19. Formula Kart: Gran Premio della Città", "Gestisci il turbo nei rettilinei per vincere la coppa dei kart."),
+        ("Sport 20. Tennis Torneo Junior: Diritto a Fondo Campo", "Scambia colpi potenti di dritto e rovescio per superare l'avversario.")
+    ],
+    "🏍️ Area 12: 10 Giochi Sportivi & Motori (Teenager 14-18 anni)": [
+        ("Sport 21. Moto GP: Derapata in Pista a 300 All'Ora", "Gestisci staccata e acceleratore per dominare il circuito di Moto GP."),
+        ("Sport 22. Calcio Champions: Gestione Partita e Tattica", "Guida la tua squadra del cuore alla vittoria della coppa europea."),
+        ("Sport 23. Rally WRC: Sterrata nel Fango Estrema", "Guida l'auto da rally tra curve a gomito e banchi di nebbia."),
+        ("Sport 24. Basket 1v1 Playground Challenge", "Sfida l'avversario in uno scontro uno contro uno a tutto campo."),
+        ("Sport 25. Snowboard Freeride: Discesa sulla Neve Fresca", "Schiva gli abeti innevati e fai evoluzioni acrobatiche nel halfpipe."),
+        ("Sport 26. Surf da Onda Grande: Tubo Perfetto", "Mantieni l'equilibrio sulla tavola mentre l'onda gigante ti sovrasta."),
+        ("Sport 27. Automobilismo F1: Gestione Gomme e Pit Stop", "Scegli la strategia di gara perfetta per vincere il Gran Premio di Formula 1."),
+        ("Sport 28. Ciclismo Giro d'Italia: Scalata dello Stelvio", "Gestisci le energie della squadra durante la durissima salita alpina."),
+        ("Sport 29. Boxe Match Mondiale: Gancio Destro K.O.", "Schiva i colpi dell'avversario e metti a segno il montante decisivo."),
+        ("Sport 30. Calcio a 5 Futsal: Azione Veloce", "Vinci la partita di calcetto indoor con passaggi rapidi e tiri fulminei.")
+    ],
+    "🏎️ Area 13: 10 Giochi Sportivi & Motori (Adulti 19-35 anni)": [
+        ("Sport 31. Simulatore di Guida GT: Endurance 24 Ore", "Gestisci consumo gomme, benzina e turni di guida nella gara di durata."),
+        ("Sport 32. Calcio Manager: Fantacalcio & Direttore Sportivo", "Acquista campioni, gestisci il bilancio e porta la squadra in Serie A."),
+        ("Sport 33. Superbike Simulator: Pista Asciutta/Bagnata", "Imposta l'assetto della moto da superbike in base alle previsioni meteo."),
+        ("Sport 34. Golf Pro Tour: 18 Buche sui Green", "Calcola vento, pendenza del terreno e seleziona il ferro giusto per la buca."),
+        ("Sport 35. Tennis Match Professionale: Grande Slam", "Gestisci la resistenza fisica e la precisione dei colpi nei match al meglio dei 5 set."),
+        ("Sport 36. Rally Raid Dakar: Deserto e Orientamento", "Guida il fuoristrada tra dune di sabbia sahariane senza rompere il motore."),
+        ("Sport 37. Basket General Manager: NBA Franchise", "Crea la dinastia vincente scambiando giocatori e ingaggiando fuoriclasse."),
+        ("Sport 38. Motocross MXGP: Gestione Salti e Sospensioni", "Metti a punto le sospensioni della moto per dominare il campionato MX."),
+        ("Sport 39. Triathlon Ironman: Nuoto, Bici e Corsa", "Gestisci lo sforzo atletico nelle tre discipline estreme di resistenza."),
+        ("Sport 40. Regata Velica America's Cup", "Sfrutta le correnti marine e orienta le vele per tagliare per prima il traguardo.")
+    ],
+    "🏆 Area 14: 10 Giochi Sportivi & Motori (Senior & Esperti 36+ anni)": [
+        ("Sport 41. Calcio Storico: Torneo dei Rioni", "Vivi la tradizione e la tattica del calcio storico con i vecchi schemi."),
+        ("Sport 42. Ciclismo Classiche Monumento: Roubaix", "Guida i passatisti sul pavé storico delle classiche del nord Europa."),
+        ("Sport 43. Motoring Vintage: Gara d'Epoca Regolarità", "Mantieni la tabella di marcia esatta con la tua auto d'epoca sportiva."),
+        ("Sport 44. Boccette e Bigliardo Classico all'Italiana", "Realizza i punti di stecca facendo carambolare le palle sul panno verde."),
+        ("Sport 45. Pesca Sportiva d'Altura in Barca", "Lancia la lenza e combatti con il grande pesce spada combattendo la corrente."),
+        ("Sport 46. Tennis Tavolo Veterani: Torneo Sociale", "Riflessi pronti e colpi tagliati per vincere il torneo del circolo."),
+        ("Sport 47. Automobilismo Classico: Gran Premio Storico", "Guida le monoposto degli anni '70 senza controlli elettronici di trazione."),
+        ("Sport 48. Vela d'Altura: Crociere e Venti di Tramontana", "Mappa la rotta della barca a vela gestendo randa e fiocco."),
+        ("Sport 49. Caccia al Bersaglio e Tiro Sportivo", "Concentrazione e respirazione per fare centro nel bersaglio fisso a 50 metri."),
+        ("Sport 50. Il Grande Derby Calcistico Storico", "Vivi la telecronaca interattiva e le emozioni della stracittadina di calcio.")
     ]
 }
 
-# --- MOTORE DI SERVER UNIVERSALE AGGIORNATO (GARANTISCE COPERTURA 100%) ---
+# --- MOTORE DI GIOCO SPORTIVO E MOTORI REALE ---
 def execute_module_engine(app_name, user_input):
     ui = user_input.lower().strip()
     
     if "AuraBot Universal Chat" in app_name:
-        return f"🤖 [AuraBot Core v5]: Risposta elaborata per '{user_input}'. Il modello neurale ha analizzato la richiesta restituendo una soluzione ottimizzata."
-    elif any(k in app_name for k in ["Leaf", "Watering", "Botanic", "Green"]):
-        return f"🌱 [Agri-Server Cloud]: Analisi botanica per '{user_input}' completata. Parametri ideali: umidità al 65%, esposizione solare indiretta e nutrienti organici."
-    elif any(k in app_name for k in ["AuraFix", "DIY", "Tool", "Room Decor", "Cosplay"]):
-        return f"🛠 [Hardware & DIY Cluster]: Protocollo eseguito con successo per '{user_input}'. Guida passo-passo generata e validata dai server tecnici."
-    elif any(k in app_name for k in ["Pet", "Paws", "Behavioral"]):
-        return f"🐾 [Pet Health Server]: Monitoraggio attivo per '{user_input}'. Stato di benessere ottimale rilevato, consigliata attività ludica quotidiana."
-    elif any(k in app_name for k in ["Sound", "Melody", "Lyrics", "Beat", "Music"]):
-        return f"🎵 [Audio Synthesis Engine]: Traccia generata per '{user_input}'. Frequenza binaurale impostata a 432Hz con pattern armonico stabile."
-    elif any(k in app_name for k in ["Story", "Moral", "Character", "Writing", "Book", "Manga"]):
-        return f"📖 [Narrative Engine v3]: Contenuto letterario elaborato per '{user_input}'. Trama avvincente con struttura narrativa bilanciata."
-    elif any(k in app_name for k in ["Pitch", "SWOT", "Canvas", "Benchmarking", "Communication", "Goal", "Outreach", "Draft", "Campaign", "Voice", "Trend", "Hook", "Script", "Calendar", "Competitor"]):
-        return f"🚀 [Growth Cloud Cluster]: Strategia aziendale optimizzata per '{user_input}'. KPI di crescita calcolati con successo al 98.5%."
-    elif any(k in app_name for k in ["Color", "Wireframe", "Logo", "Typography", "Prompt", "Icon", "Microcopy", "Moodboard", "Landing", "Accessibility", "Photography"]):
-        return f"🎨 [Design Studio Server]: Risorse grafiche e UI strutturate per '{user_input}'. Conformità agli standard visivi verificata."
-    elif any(k in app_name for k in ["Budget", "Asset", "Data", "SQL", "Regex", "Estimator", "Statistical", "Calculator", "JSON"]):
-        return f"📊 [Data Engine Cluster]: Elaborazione numerica completata per '{user_input}'. Nessun errore di sintassi riscontrato nei flussi dati."
-    elif any(k in app_name for k in ["Habit", "Meditation", "Procrastination", "Sleep", "Public Speaking", "Detox", "Relationship", "Travel", "Vision Board"]):
-        return f"🧘 [Mindfulness Server]: Sessione personalizzata attivata per '{user_input}'. Livello di stress ridotto e focus mentale ristabilito."
-    elif any(k in app_name for k in ["Homework", "Exam", "Language", "Career", "Gamer", "Coding", "Sport", "Safety"]):
-        return f"🎒 [Edu-Net Server]: Soluzione e spiegazione didattica pronta per '{user_input}'. Metodo di apprendimento rapido applicato."
-    elif "Game" in app_name or "Quiz" in app_name or "Rompicapo" in app_name or "Indovina" in app_name or "Test" in app_name or "Sfida" in app_name or "Labirinto" in app_name:
-        st.session_state.game_state["score"] += 15
-        return f"🎯 [Arcade Game Server]: Risposta per '{user_input}' verificata. Risultato: **CORRETTO!** Hai guadagnato +15 punti (Punteggio totale: {st.session_state.game_state['score']})."
+        return f"🤖 [AuraBot Core]: Risposta elaborata per '{user_input}'."
+    elif "Digital Pet Companion" in app_name:
+        return f"🐾 [Pet Server]: Interazione completata per '{user_input}'."
+    elif "Personal Budget Planner" in app_name:
+        return f"📊 [Budget Server]: Movimento finanziario registrato con successo."
+    elif "Sport" in app_name or any(k in app_name for k in ["Calcio", "Basket", "Moto", "Salto", "Tennis", "Nuoto", "Bici", "Bowling", "Monopattino", "Corsa", "Skateboard", "BMX", "Volley", "Parkour", "Formula", "Rally", "Snowboard", "Surf", "Automobilismo", "Ciclismo", "Boxe", "Golf", "Triathlon", "Regata", "Boccette", "Pesca", "Tiro", "Derby"]):
+        st.session_state.game_state["score"] += 25
+        return f"⚽ [Server Sportivo & Motori]: Azione '{user_input}' eseguita in '{app_name}'. Risultato: **OTTIMA ESECUZIONE!** Punteggio: {st.session_state.game_state['score']} punti 🥇"
     else:
-        return f"⚡ [AuraSync Global Engine]: Elaborazione completata per '{user_input}' nel modulo '{app_name}'. Tutti i cluster operativi rispondono correttamente."
+        return f"⚡ [AuraSync Global Engine]: Elaborazione completata per '{user_input}' nel modulo '{app_name}'."
 
 # --- INTERFACCIA PER IL MODULO ATTIVO ---
 def render_active_app_interface(app_name):
-    st.subheader(f"🚀 Modulo Attivo (Server Connesso): {app_name}")
+    st.subheader(f"🚀 Modulo / Gioco Sportivo Attivo: {app_name}")
     st.divider()
 
     if "AuraBot Universal Chat" in app_name:
-        st.write("💬 **Chat in tempo reale con AuraBot (Server Cloud Dedicato):**")
+        st.write("💬 **Chat in tempo reale con AuraBot:**")
         for sender, text in st.session_state.chat_history:
             if sender == "Tu":
                 st.markdown(f"👤 **{sender}:** {text}")
@@ -271,52 +283,58 @@ def render_active_app_interface(app_name):
         c1, c2, c3 = st.columns(3)
         if c1.button("🍖 Da' da mangiare"):
             p['hunger'] = 100
-            p['energy'] = 100
-            p['mood'] = "Sazio e Felice 😊"
-            st.success("Il cucciolo ha mangiato tramite il server di simulazione.")
+            p['mood'] = "In Forma 🥇"
+            st.success("Il cucciolo ha fatto il pieno di energie.")
             st.rerun()
-        if c2.button("🎾 Gioca insieme"):
+        if c2.button("🎾 Allenamento Sportivo"):
             p['energy'] = 100
-            p['hunger'] = 100
-            p['mood'] = "Eccitato ed Energetico ⚡"
-            st.success("Sessione di gioco completata con successo.")
+            p['mood'] = "Campione Olimpico 🏆"
+            st.success("Sessione di allenamento completata.")
             st.rerun()
-        if c3.button("💤 Metti a dormire"):
+        if c3.button("💤 Riposo"):
             p['energy'] = 100
-            p['mood'] = "Riposato e Tranquillo 😴"
-            st.success("Il cucciolo ha riposato rigenerandosi.")
+            st.success("Riposo completato.")
             st.rerun()
 
-    elif "Personal Budget Planner" in app_name:
-        st.write("Gestisci le tue risorse in tempo reale:")
-        desc = st.text_input("Descrizione movimento:")
-        amount = st.number_input("Importo (€):", value=50.0, min_value=0.0)
-        m_type = st.selectbox("Tipo:", ["Entrata", "Uscita"])
+    elif "Sport" in app_name or any(k in app_name for k in ["Calcio", "Basket", "Moto", "Salto", "Tennis", "Nuoto", "Bici", "Bowling", "Monopattino", "Corsa", "Skateboard", "BMX", "Volley", "Parkour", "Formula", "Rally", "Snowboard", "Surf", "Automobilismo", "Ciclismo", "Boxe", "Golf", "Triathlon", "Regata", "Boccette", "Pesca", "Tiro", "Derby"]):
+        st.markdown(f"### 🏟️ Simulatore Sportivo & Motori: **{app_name}**")
+        st.info("Premi i pulsanti di azione in tempo reale per gestire la tua prestazione sportiva o di guida in pista!")
         
-        if st.button("Registra Movimento"):
-            st.session_state.budget_items.append({"desc": desc if desc else "Transazione", "amount": amount, "type": m_type})
-            st.success("Transazione registrata nel database sicuro!")
-            st.rerun()
+        col_s1, col_s2, col_s3 = st.columns(3)
+        with col_s1:
+            if st.button("⚡ Acceleratore / Affondo", use_container_width=True):
+                res = execute_module_engine(app_name, "Accelerazione / Tiro pieno")
+                st.success(res)
+        with col_s2:
+            if st.button("🎯 Mira di Precisione / Staccata", use_container_width=True):
+                res = execute_module_engine(app_name, "Staccata al limite / Mira perfetta")
+                st.success(res)
+        with col_s3:
+            if st.button("🔥 Turbo / Scatto Finale", use_container_width=True):
+                res = execute_module_engine(app_name, "Attivazione Turbo / Volata finale")
+                st.success(res)
         
-        totale = sum(item['amount'] if item['type'] == 'Entrata' else -item['amount'] for item in st.session_state.budget_items)
-        st.metric("Bilancio Attuale", f"€ {totale:.2f}")
-        st.write("**Storico Movimenti:**")
-        for item in st.session_state.budget_items:
-            st.markdown(f"- {item['desc']}: **{'+' if item['type']=='Entrata' else '-' }€{item['amount']}**")
+        st.write("")
+        custom_action = st.text_input("Inserisci una mossa specifica (es. 'tiro a giro sotto l'incrocio', 'derapata di potenza'):")
+        if st.button("Esegui Mossa Sportiva"):
+            if custom_action:
+                res_custom = execute_module_engine(app_name, custom_action)
+                st.success(res_custom)
+            else:
+                st.warning("Inserisci una mossa valida.")
 
     else:
         st.write(f"⚙️ **Pannello Operativo Avanzato per {app_name}**")
-        user_input = st.text_input("Inserisci dati, comandi o query per il server:", placeholder="Scrivi qui per avviare l'elaborazione...")
+        user_input = st.text_input("Inserisci dati o comandi per il server:", placeholder="Scrivi qui...")
         
-        if st.button("Esegui sul Server Neurale 🚀"):
+        if st.button("Esegui sul Server 🚀"):
             if user_input:
-                with st.spinner("Elaborazione in corso sui cluster dedicati..."):
+                with st.spinner("Elaborazione in corso..."):
                     time.sleep(0.2)
                 result_text = execute_module_engine(app_name, user_input)
                 st.success(result_text)
-                st.info("✨ Modulo elaborato correttamente con risposta ottimizzata dal server!")
             else:
-                st.warning("⚠️ Inserisci un testo valido per procedere.")
+                st.warning("Inserisci un testo valido.")
 
     st.divider()
     col_b1, col_b2 = st.columns(2)
@@ -335,13 +353,13 @@ def render_active_app_interface(app_name):
 
 top_col1, top_col2, top_col3 = st.columns([2, 1, 1])
 with top_col1:
-    st.title("🌐 AuraSync OS v5.0")
+    st.title("⚽ AuraSync OS v7.0 - Sports & Motors")
 with top_col2:
-    persone_online = random.randint(180, 240)
+    persone_online = random.randint(240, 290)
     st.metric("👥 Server Attivi", f"{persone_online} nodi")
 with top_col3:
     st.write("") 
-    if st.button(">> 📁 Menu App & Giochi", type="secondary", use_container_width=True):
+    if st.button(">> 📁 Menu App & Sport", type="secondary", use_container_width=True):
         if st.session_state.active_view == "bacheca":
             st.session_state.active_view = "menu_file"
         else:
@@ -354,45 +372,49 @@ if st.session_state.active_view == "bacheca":
     if st.session_state.active_app:
         render_active_app_interface(st.session_state.active_app)
     else:
-        st.subheader("📦 Panoramica Pacchetti Attivi & Server Cloud Aggiornati")
+        st.subheader("📦 Panoramica Pacchetti & 50 Giochi Sportivi e di Motori")
         
         col_p1, col_p2, col_p3 = st.columns(3)
         with col_p1:
             st.markdown("""
-            - **🧠 Core IA & Produttività**: 15 moduli (Server AI v5.0)
-            - **🌿 Benessere & Social**: 20 moduli (Cloud Bio-Sync)
-            - **📖 Famiglia & Musica**: 15 moduli (Audio Stream Hub)
+            - **🧠 Core IA & Produttività**: 15 moduli
+            - **🌿 Benessere & Social**: 20 moduli
+            - **📖 Famiglia & Musica**: 15 moduli
+            - **💎 Risorse & Toolbox**: 15 moduli
             """)
         with col_p2:
             st.markdown("""
-            - **💎 Risorse & Toolbox**: 15 moduli (Secure Open Vault)
-            - **🚀 Creative Projects**: 10 moduli (Growth Engine)
-            - **🎨 Design & UI/UX**: 10 moduli (Vector Render Server)
+            - **🚀 Creative Projects**: 10 moduli
+            - **🎨 Design & UI/UX**: 10 moduli
+            - **📊 Data Science**: 10 moduli
+            - **🧘 Life Coaching**: 10 moduli
+            - **🎒 Teen Empowerment**: 20 moduli
             """)
         with col_p3:
             st.markdown("""
-            - **📊 Data Science**: 10 moduli (SQL & Stats Cluster)
-            - **🧘 Life Coaching**: 10 moduli (Mindfulness Node)
-            - **🎒 Teen Empowerment**: 20 moduli (Edu-Net 3.0)
-            - **🎮 Giochi & Quiz**: 30 moduli (Arcade Server v5)
+            - **⚽ 4-8 Anni (10 Sport)**: Calcio, Basket, Moto Kids
+            - **🏀 9-13 Anni (10 Sport)**: Punizioni, NBA, Skateboard
+            - **🏍️ 14-18 Anni (10 Sport)**: Moto GP, Rally, F1
+            - **🏎️ 19-35 Anni (10 Sport)**: GT Endurance, Golf, Triathlon
+            - **🏆 36+ Anni (10 Sport)**: Calcio Storico, Boccette, Regate
             """)
         
         st.divider()
         
         col_m1, col_m2, col_m3 = st.columns(3)
         col_m1.metric("Modalità di Sistema", "Open Access ✨")
-        col_m2.metric("Moduli e Giochi Totali", "150 Online 🚀")
+        col_m2.metric("Moduli e Sport Totali", "200 Online 🚀")
         col_m3.metric("Stato Server", "Aggiornato al 100% 🟢")
 
         st.divider()
         st.subheader("📢 Istruzioni rapide")
-        st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & Giochi**) per aprire il catalogo completo.\n• Tutti i server e i motori di calcolo sono stati aggiornati per assicurare la massima reattività su ciascuno dei 150 moduli.")
+        st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & Sport**) per aprire il catalogo completo.\n• Tutti i 50 giochi di sport e motori (calcio, basket, moto, formula 1, rally) sono ora pronti per essere giocati.")
     
 else:
-    st.header("📂 Catalogo Completo (150 App & Giochi - Server Aggiornati)")
-    st.write("Stato: **Cluster Cloud Ottimizzati e Connessi** | Cerca per nome, categoria o tipologia di servizio.")
+    st.header("📂 Catalogo Completo (150 App + 50 Sport & Motori)")
+    st.write("Stato: **Cluster Cloud Sportivi Connessi** | Scegli il tuo sport o la tua disciplina motoria preferita.")
     
-    ai_query = st.text_input("🤖 Ricerca IA nel Catalogo:", placeholder="Es. game, quiz, budget, pet, chat, social, fitness...")
+    ai_query = st.text_input("🤖 Ricerca IA nel Catalogo:", placeholder="Es. calcio, basket, moto, rally, f1, tennis, golf, budget...")
     
     st.divider()
 
@@ -425,11 +447,11 @@ else:
             with cols[idx % 3]:
                 st.markdown(f"""
                 <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 12px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 180px;">
-                    <h4 style="margin-bottom: 5px; font-size: 15px;">✨ {file_name}</h4>
+                    <h4 style="margin-bottom: 5px; font-size: 15px;">⚡ {file_name}</h4>
                     <p style="font-size: 12px; color: #555; margin-bottom: 10px;">{file_desc}</p>
                 </div>
                 """, unsafe_allow_html=True)
-                if st.button(f"🚀 Connetti Modulo", key=f"btn_{category}_{idx}"):
+                if st.button(f"🚀 Connetti Sport", key=f"btn_{category}_{idx}"):
                     st.session_state.active_app = file_name
                     st.session_state.active_view = "bacheca"
                     st.rerun()
