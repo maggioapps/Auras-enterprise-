@@ -16,6 +16,7 @@ if "wheel_spun_today" not in st.session_state: st.session_state.wheel_spun_today
 if "wallet_tokens" not in st.session_state: st.session_state.wallet_tokens = 0
 if "wheel_result_val" not in st.session_state: st.session_state.wheel_result_val = None
 if "active_view" not in st.session_state: st.session_state.active_view = "bacheca"
+if "active_app" not in st.session_state: st.session_state.active_app = None
 
 # CATALOGO COMPLETO DELLE 150 APPLICAZIONI (Ordinate per importanza)
 AURASYNC_CATALOG = {
@@ -106,7 +107,7 @@ AURASYNC_CATALOG = {
 # --- FLUSSO PRINCIPALE ---
 
 if not st.session_state.tutorial_completed:
-    # 1. TUTORIAL SPECIFICO E DETTAGLIATO (20 SECONDI)
+    # 1. TUTORIAL SPECIFICO (20 SECONDI)
     st.title("📘 Manuale Operativo Ufficiale - AuraSync OS")
     st.markdown("### Benvenuto nel Sistema Operativo Cognitivo Integrato")
     
@@ -115,8 +116,8 @@ if not st.session_state.tutorial_completed:
     Ecco come è strutturata la tua esperienza:
     
     * **🪙 Wallet e Gettoni d'Oro:** All'avvio riceverai gettoni omaggio che potrai incrementare tramite la Ruota della Fortuna per sbloccare funzionalità premium.
-    * **📂 Menu File e Moduli:** Cliccando sulle frecce in alto a destra `(>> 📁 Apri Menu File)` potrai accedere all'elenco completo suddiviso per categorie di importanza (dalla Core IA al Business, fino ai giochi).
-    * **🔍 Barra di Ricerca Interna:** All'interno del menu file troverai una barra di ricerca dedicata per trovare istantaneamente qualsiasi applicazione digitando una parola chiave.
+    * **📂 Menu a Icone e Dettagli:** Cliccando sulle frecce in alto a destra `(>> 📁 Apri Menu File)` si aprirà la pagina interattiva con tutte le 150 applicazioni disposte a icona, complete di dettagli e pulsanti di avvio rapido.
+    * **🔍 Barra di Ricerca Interna:** Trova istantaneamente qualsiasi applicazione digitando una parola chiave nel menu.
     """)
     
     st.info("⏳ **Il tutorial avanzato si chiuderà automaticamente tra 20 secondi** accreditando subito **3 Gettoni d'Oro** nel tuo wallet...")
@@ -204,25 +205,42 @@ else:
     st.divider()
 
     if st.session_state.active_view == "bacheca":
-        st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
-        
-        col_m1, col_m2 = st.columns(2)
-        with col_m1:
-            st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
-        with col_m2:
-            st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
+        if st.session_state.active_app:
+            # Se un'app è stata avviata dal menu a icone
+            st.header(f"🚀 Modulo Attivo: {st.session_state.active_app}")
+            st.success(f"L'applicazione **{st.session_state.active_app}** è stata caricata con successo nell'area di lavoro.")
+            st.write("Ambiente operativo pronto per l'elaborazione dei dati e l'interazione cognitiva.")
+            
+            col_back1, col_back2 = st.columns(2)
+            with col_back1:
+                if st.button("🔙 Torna alla Bacheca Principale"):
+                    st.session_state.active_app = None
+                    st.rerun()
+            with col_back2:
+                if st.button("📂 Torna al Menu a Icone"):
+                    st.session_state.active_view = "menu_file"
+                    st.session_state.active_app = None
+                    st.rerun()
+        else:
+            st.success("🎉 Benvenuto nella schermata principale della community e della bacheca pubblica!")
+            
+            col_m1, col_m2 = st.columns(2)
+            with col_m1:
+                st.metric("I tuoi Gettoni Disponibili", f"{st.session_state.wallet_tokens} 🪙")
+            with col_m2:
+                st.metric("Moduli e Giochi Totali", "150 Disponibili 🚀")
 
-        st.divider()
-        st.subheader("📢 Ultime Notizie dalla Community")
-        st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati nel database.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu ordinato con barra di ricerca interna.")
+            st.divider()
+            st.subheader("📢 Ultime Notizie dalla Community")
+            st.info("• Aggiornamento attivo: Tutti i 150 moduli e giochi sono sincronizzati.\n• Usa il pulsante in alto a destra (**>> 📁 Apri Menu File**) per accedere al menu visivo a icone con dettagli e ricerca.")
         
     else:
-        # --- MENU FILE E MODULI (TUTTI E 150) CON BARRA DI RICERCA INTERNA IN ALTO ---
-        st.header("📂 Menu File e Moduli (Tutti i 150 Pronti all'Uso)")
-        st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙**")
+        # --- MENU FILE E MODULI A ICONE E DETTAGLI (TUTTI E 150) ---
+        st.header("📂 Menu Applicazioni - Vista a Icone e Dettagli")
+        st.write(f"Gettoni nel Wallet: **{st.session_state.wallet_tokens} 🪙** | Esplora le 150 applicazioni suddivise per area.")
         
         # BARRA DI RICERCA INTERNA
-        search_query = st.text_input("🔍 Cerca tra tutte le 150 applicazioni e giochi:", placeholder="Scrivi ad esempio 'Game', 'Chat', 'Budget', 'Eco'...")
+        search_query = st.text_input("🔍 Cerca tra tutte le 150 applicazioni e giochi:", placeholder="Scrivi ad esempio 'Chat', 'Budget', 'Game', 'Eco'...")
         
         st.divider()
 
@@ -236,23 +254,40 @@ else:
             
             if found_items:
                 st.write(f"Trovati **{len(found_items)}** moduli corrispondenti:")
-                for area, file_name in found_items:
-                    st.write(f"• **{file_name}** *(Area: {area})*")
-                chosen_search_file = st.selectbox("Seleziona il file trovato da avviare:", [item[1] for item in found_items])
-                st.info(f"File attivo: **{chosen_search_file}**. Pronto all'uso.")
+                cols = st.columns(3)
+                for idx, (area, file_name) in enumerate(found_items):
+                    with cols[idx % 3]:
+                        st.markdown(f"""
+                        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 10px; background-color: #fafafa;">
+                            <h4>🧩 {file_name}</h4>
+                            <p style="font-size: 12px; color: #666;">Categoria: {area}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        if st.button(f"Avvia ➔ {file_name[:15]}...", key=f"search_{idx}"):
+                            st.session_state.active_app = file_name
+                            st.session_state.active_view = "bacheca"
+                            st.rerun()
             else:
                 st.warning("Nessun file trovato con questa parola chiave.")
         else:
-            categories = list(AURASYNC_CATALOG.keys())
-            selected_cat = st.selectbox("Seleziona Area Organizzata:", categories)
-            
-            st.subheader(selected_cat)
-            files_in_cat = AURASYNC_CATALOG[selected_cat]
-            chosen_file = st.selectbox("Seleziona il file o modulo pronto all'uso:", files_in_cat)
-            
-            st.info(f"File attivo: **{chosen_file}**. Ambiente di esecuzione caricato correttamente.")
+            # MOSTRA PER CATEGORIE SOTTO FORMA DI GRIGLIA A ICONE E DETTAGLI
+            for category, files in AURASYNC_CATALOG.items():
+                st.subheader(category)
+                cols = st.columns(3)
+                for idx, file_item in enumerate(files):
+                    with cols[idx % 3]:
+                        st.markdown(f"""
+                        <div style="border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 12px; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                            <h4 style="margin-bottom: 5px; font-size: 16px;">✨ {file_item}</h4>
+                            <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Modulo operativo integrato e pronto all'uso in ambiente AuraSync.</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        if st.button(f"🚀 Avvia Modulo", key=f"btn_{category}_{idx}"):
+                            st.session_state.active_app = file_item
+                            st.session_state.active_view = "bacheca"
+                            st.rerun()
+                st.divider()
         
-        st.divider()
         if st.button("🔙 Torna alla Bacheca Pubblica"):
             st.session_state.active_view = "bacheca"
             st.rerun()
