@@ -3,7 +3,7 @@ import random
 
 # Configurazione della pagina
 st.set_page_config(
-    page_title="AuraSync - 18+ Interactive OS v7.7",
+    page_title="AuraSync - 18+ Interactive OS v7.8",
     page_icon="🔥",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -22,6 +22,8 @@ if "last_card" not in st.session_state:
     st.session_state.last_card = "Clicca su 'Estrai Quesito' per iniziare."
 if "magnetism_result" not in st.session_state: 
     st.session_state.magnetism_result = None
+if "magnetism_explanation" not in st.session_state: 
+    st.session_state.magnetism_explanation = ""
 if "dating_chat" not in st.session_state: 
     st.session_state.dating_chat = [
         {"sender": "Sofia", "text": "Ciao! Che piacere fare la tua conoscenza qui su AuraMatch. Di cosa ti occupi nel tempo libero?"}
@@ -39,7 +41,7 @@ CATALOGO_MODULI = {
     },
     "Adult 3. Chemistry & Magnetic Meter AI": {
         "cat": "🔥 Area 16: Adult & Advanced Interactive (18+)",
-        "desc": "Simulatore in tempo reale di affinità, magnetismo e sintonia di coppia avanzata."
+        "desc": "Simulatore in tempo reale di affinità, magnetismo e sintonia di coppia avanzata con analisi dettagliata."
     },
     "Dating 1. AuraMatch: Swipe & Chat Reale": {
         "cat": "❤ Area 15: Dating & App di Incontri",
@@ -128,32 +130,51 @@ def render_active_app_interface(app_name):
             
         st.warning(f"🔥 **Quesito Estratto:**\n\n> *{st.session_state.last_card}*")
 
-    # 3. CHEMISTRY & MAGNETIC METER (Adult 3)
+    # 3. CHEMISTRY & MAGNETIC METER (Adult 3) - CON SPIEGAZIONE E RIFLESSIONE DETTAGLIATA
     elif "Magnetic Meter" in app_name:
         st.markdown("### 🧪 Chemistry & Magnetic Meter AI")
-        st.write("Analizzatore istantaneo del livello di compatibilità e magnetismo psicologico.")
+        st.write("Analizzatore istantaneo del livello di compatibilità e magnetismo psicologico con spiegazione approfondita.")
         
         p1 = st.text_input("Inserisci il tuo nome o profilo:", key="partner_1")
         p2 = st.text_input("Inserisci il nome o profilo del partner:", key="partner_2")
         
         if st.button("Calcola Magnetismo ✨", key="btn_calc_mag"):
             if p1.strip() and p2.strip():
-                st.session_state.magnetism_result = random.randint(88, 99)
+                score = random.randint(85, 99)
+                st.session_state.magnetism_result = score
+                
+                # Generazione dinamica della spiegazione approfondita
+                explanations = [
+                    f"Tra **{p1.capitalize()}** e **{p2.capitalize()}** si attiva una polarità energetica straordinaria. Il punteggio del {score}% evidenzia un'attrazione istintiva in cui le differenze non creano attrito, ma agiscono come carichi opposti che si attraggono magneticamente. C'è una forte componente di curiosità mentale e una tensione sottile che spinge alla scoperta reciproca senza filtri.",
+                    f"Il valore del {score}% registrato tra **{p1.capitalize()}** e **{p2.capitalize()}** svela una sintonia sottile ma potentissima. Condividete frequenze emotive elevate: bastano un'occhiata o una battuta per accendere un'intesa immediata. L'attrazione psicologica è il fulcro di questo legame, capace di superare qualsiasi barriera formale.",
+                    f"Un'affinità del {score}% tra **{p1.capitalize()}** e **{p2.capitalize()}** indica un magnetismo basato sull'alternanza perfetta tra complicità e mistero. Nessuno dei due svela tutto subito, e questo gioco di specchi psicologico mantiene la fiamma e la curiosità costantemente alte nel tempo."
+                ]
+                st.session_state.magnetism_explanation = random.choice(explanations)
             else:
                 st.warning("Inserisci entrambi i nomi per procedere al calcolo.")
                 st.session_state.magnetism_result = None
+                st.session_state.magnetism_explanation = ""
                 
         if st.session_state.magnetism_result:
             st.balloons()
             st.success(f"🔥 **Indice di Magnetismo Calcolato: {st.session_state.magnetism_result}%!**")
-            st.info("I profili mostrano una forte polarizzazione e un'attrazione mentale e psicologica elevatissima. Sintonia profonda rilevata.")
+            
+            # Sezione dedicata alla riflessione e spiegazione analitica
+            st.markdown("---")
+            st.markdown("### 🧠 Analisi e Riflessione Psicologica dell'Intesa")
+            st.info(st.session_state.magnetism_explanation)
+            
+            st.markdown("""
+            * **Dinamica di Coppia:** Elevata reattività emotiva e scambi intensi.
+            * **Punto di Forza:** Forte magnetismo mentale e naturale predisposizione al dialogo senza inibizioni.
+            * **Consiglio AuraSync:** Alimentate la complicità lasciando spazio al fattore sorpresa e all'attesa.
+            """)
 
     # 4. AURAMATCH CHAT REALE (Dating 1)
     elif "AuraMatch" in app_name:
         st.markdown("### ❤️ AuraMatch: Chat con Sofia, 24")
         st.write("Scambia messaggi in tempo reale con il profilo selezionato:")
         
-        # Mostra la cronologia della chat
         for msg in st.session_state.dating_chat:
             if msg["sender"] == "Tu":
                 st.markdown(f"<div style='text-align: right; background-color: #d1e7dd; padding: 10px; border-radius: 10px; margin: 5px 0;'><b>Tu:</b> {msg['text']}</div>", unsafe_allow_html=True)
@@ -164,7 +185,6 @@ def render_active_app_interface(app_name):
         if st.button("Invia Messaggio 💬", key="btn_send_dating"):
             if user_msg.strip():
                 st.session_state.dating_chat.append({"sender": "Tu", "text": user_msg})
-                # Risposta dinamica simulata
                 bot_replies = [
                     "Che bella risposta! Mi piacerebbe continuare a chiacchierare di persona.",
                     "Adoro il tuo punto di vista! Raccontami qualcos'altro su di te.",
@@ -204,7 +224,7 @@ def render_active_app_interface(app_name):
 # --- INTERFACCIA PRINCIPALE ---
 top_col1, top_col2, top_col3 = st.columns([2, 1, 1])
 with top_col1:
-    st.title("🔥 AuraSync OS v7.7 - Routing Perfetto")
+    st.title("🔥 AuraSync OS v7.8 - Analisi Avanzata")
 with top_col2:
     st.metric("👥 Stato", "Online")
 with top_col3:
@@ -223,7 +243,7 @@ if st.session_state.active_view == "bacheca":
         st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & 18+**) per aprire il catalogo ed entrare nel modulo desiderato.")
 else:
     st.header("📂 Catalogo Completo Selezionato")
-    ai_query = st.text_input("🤖 Cerca nel catalogo:", placeholder="Es. nocturne, red secrets, auramatch...", key="search_cat_fixed")
+    ai_query = st.text_input("🤖 Cerca nel catalogo:", placeholder="Es. nocturne, red secrets, chemistry...", key="search_cat_fixed")
     st.divider()
 
     categorie = {}
@@ -245,7 +265,6 @@ else:
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Chiave sicura e unica per ogni singolo modulo
                 safe_key = f"launch_fixed_{file_name}"
                 if st.button(f"🚀 Avvia Modulo", key=safe_key):
                     st.session_state.active_app = file_name
