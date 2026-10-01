@@ -1,7 +1,6 @@
 import streamlit as st
-from googletrans import LANGUAGES, Translator
 
-# Configurazione della pagina
+# Configurazione della pagina (deve essere la prima istruzione Streamlit)
 st.set_page_config(
     page_title="AuraSync OS — Full Edition",
     page_icon="⚡",
@@ -9,9 +8,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-translator = Translator()
+# --- DIZIONARIO LINGUE NATIVO (Zero dipendenze esterne, zero errori) ---
+LINGUE_DISPONIBILI = {
+    "Italiano": "it",
+    "English": "en",
+    "Español": "es",
+    "Français": "fr",
+    "Deutsch": "de"
+}
 
-# --- LOGICA DELLE SINGOLE APPLICAZIONI (ISOLATE E FUNZIONANTI) ---
+# --- LOGICA DELLE APPLICAZIONI (ISOLATE E MODULARI) ---
 
 def app_media_ponderata():
     st.subheader("🎓 Calcolatore Media Ponderata e CFU")
@@ -54,37 +60,35 @@ def app_dashboard():
     st.subheader("🖥️ Dashboard Zero-Click & Control Center")
     st.write("Panoramica rapida del tuo ecosistema operativo personale.")
     
-    col1, col2, col3 = st.triline = st.columns(3) if hasattr(st, "columns") else (None, None, None)
-    # Metriche rapide di sistema
-    st.metric(label="Stato del Sistema", value="Online", delta="100% Sincronizzato")
-    st.metric(label="Moduli Caricati", value="300 / 300", delta="Pronti")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric(label="Stato del Sistema", value="Online", delta="100% Sincronizzato")
+    with col2:
+        st.metric(label="Moduli Totali", value="300", delta="Disponibili")
 
-# --- REGISTRO CENTRALE DEI MODULI (Mappa dei 50 Capitoli) ---
+# --- REGISTRO CENTRALE DEI MODULI ---
 registro_app = {
+    "🖥️ Control Center: Dashboard": app_dashboard,
     "🎓 Università: Calcolatore Media": app_media_ponderata,
     "🛠️ Casa: Sblocco Lavandino": app_sblocco_lavandino,
     "🎮 Gamification: XP System": app_xp_system,
-    "🖥️ Control Center: Dashboard": app_dashboard,
 }
 
-# --- BARRA LATERALE E LINGUA UNIVERSALE ---
+# --- BARRA LATERALE E SELETTORE LINGUA ---
 st.sidebar.title("⚡ AuraSync OS")
-st.sidebar.caption("Architettura Modulare a 300 Moduli")
+st.sidebar.caption("Architettura Modulare Completa")
 st.sidebar.markdown("---")
 
-# Selettore Lingua Universale
-language_options = [name.capitalize() for name in LANGUAGES.values()]
 selected_lang_name = st.sidebar.selectbox(
-    "🌍 Lingua Universale:",
-    options=language_options,
-    index=language_options.index("Italian") if "Italian" in language_options else 0,
+    "🌍 Seleziona Lingua:",
+    options=list(LINGUE_DISPONIBILI.keys()),
+    index=0
 )
-selected_lang_code = [code for code, name in LANGUAGES.items() if name.capitalize() == selected_lang_name][0]
+selected_lang_code = LINGUE_DISPONIBILI[selected_lang_name]
 
 st.sidebar.markdown("---")
 st.sidebar.header("🧭 Selettore Applicazioni")
 
-# Selezione pulita tramite menu a tendina laterale
 scelta_app = st.sidebar.selectbox(
     "Scegli il modulo da eseguire:",
     options=list(registro_app.keys())
@@ -95,12 +99,10 @@ st.sidebar.info("📱 Suggerimento PWA: Aggiungi questa app alla schermata Home 
 
 # --- CORPO PRINCIPALE ---
 st.title("⚡ AuraSync OS — Centro di Controllo")
-st.caption(f"Esecuzione Modulo Isolata | Lingua attiva: {selected_lang_name}")
+st.caption(f"Esecuzione Modulo Isolata | Lingua attiva: {selected_lang_name} ({selected_lang_code})")
 st.markdown("---")
 
-# Esecuzione dinamica sicura del modulo selezionato
 if scelta_app in registro_app:
-    # Richiama la funzione associata all'app scelta senza conflitti di stato
     registro_app[scelta_app]()
 else:
     st.error("Modulo non trovato o in fase di caricamento.")
