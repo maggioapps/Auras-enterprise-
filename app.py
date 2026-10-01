@@ -3,7 +3,7 @@ import random
 
 # Configurazione della pagina
 st.set_page_config(
-    page_title="AuraSync - 18+ Interactive OS v7.8",
+    page_title="AuraSync OS v7.9 - Full Catalog & 18+",
     page_icon="🔥",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -29,8 +29,9 @@ if "dating_chat" not in st.session_state:
         {"sender": "Sofia", "text": "Ciao! Che piacere fare la tua conoscenza qui su AuraMatch. Di cosa ti occupi nel tempo libero?"}
     ]
 
-# CATALOGO DEI MODULI
+# CATALOGO COMPLETO DI TUTTE LE AREE E MODULI DI AURASYNC
 CATALOGO_MODULI = {
+    # AREA ADULTI E INCONTRI (18+)
     "Adult 1. Nocturne Noir: Visual Novel di Seduzione": {
         "cat": "🔥 Area 16: Adult & Advanced Interactive (18+)",
         "desc": "Thriller psicologico e romantico a bivi narrativi interattivi con tensione crescente."
@@ -41,7 +42,7 @@ CATALOGO_MODULI = {
     },
     "Adult 3. Chemistry & Magnetic Meter AI": {
         "cat": "🔥 Area 16: Adult & Advanced Interactive (18+)",
-        "desc": "Simulatore in tempo reale di affinità, magnetismo e sintonia di coppia avanzata con analisi dettagliata."
+        "desc": "Simulatore in tempo reale di affinità, magnetismo e sintonia di coppia con analisi e riflessione dettagliata."
     },
     "Dating 1. AuraMatch: Swipe & Chat Reale": {
         "cat": "❤ Area 15: Dating & App di Incontri",
@@ -50,6 +51,52 @@ CATALOGO_MODULI = {
     "Dating 2. Couple Chemistry & Compatibility Quiz": {
         "cat": "❤ Area 15: Dating & App di Incontri",
         "desc": "Test di compatibilità reale con punteggio di affinità dinamico."
+    },
+    
+    # AREE SPORTIVE E MOTORI
+    "Sport 1. Calcio: Rigore Decisivo 1v1": {
+        "cat": "⚽ Area 10-14: Giochi Sportivi & Motori",
+        "desc": "Scegli dove tirare dagli 11 metri e prova a battere il portiere virtuale."
+    },
+    "Sport 2. Basket Street: Tiri da Tre Punti": {
+        "cat": "⚽ Area 10-14: Giochi Sportivi & Motori",
+        "desc": "Gestisci il tempismo e la potenza per segnare canestri consecutivi."
+    },
+    "Sport 3. Simulatore Guida Rally VR": {
+        "cat": "⚽ Area 10-14: Giochi Sportivi & Motori",
+        "desc": "Test di riflessi e guida ad alta velocità su percorsi sterrati."
+    },
+
+    # AREE UTILITY, SYSTEM & PRODUTTIVITÀ
+    "System 1. AuraSync Terminal & Diagnostics": {
+        "cat": "💻 Area 1-9: Utility di Sistema & Developer Tools",
+        "desc": "Console di comando avanzata per il monitoraggio dei server e dei processi attivi."
+    },
+    "System 2. Cloud Storage & File Manager Pro": {
+        "cat": "💻 Area 1-9: Utility di Sistema & Developer Tools",
+        "desc": "Gestione e archiviazione sicura dei file multimediali e dei dati di sessione."
+    },
+    "AI 1. Neural Prompt Studio & Assistant": {
+        "cat": "💻 Area 1-9: Utility di Sistema & Developer Tools",
+        "desc": "Generatore e ottimizzatore di prompt avanzati per modelli linguistici."
+    },
+    "AI 2. Code Syntax & Debugger Engine": {
+        "cat": "💻 Area 1-9: Utility di Sistema & Developer Tools",
+        "desc": "Analizzatore di codice in tempo reale per correggere errori di sintassi."
+    },
+
+    # AREE COMMUNITY & SOCIAL
+    "Community 1. AuraFeed Community Wall": {
+        "cat": "🌐 Area 17-20: Community, Feed & Social Hub",
+        "desc": "Bacheca globale interattiva per condividere post, idee e progetti con la community."
+    },
+    "Community 2. Creator Hall of Fame": {
+        "cat": "🌐 Area 17-20: Community, Feed & Social Hub",
+        "desc": "Classifica d'onore che celebra i creatori di contenuti e moduli più votati."
+    },
+    "Community 3. Prompt & Template Hub": {
+        "cat": "🌐 Area 17-20: Community, Feed & Social Hub",
+        "desc": "Centro ufficiale per scambiare e scaricare liberamente prompt e template."
     }
 }
 
@@ -130,7 +177,7 @@ def render_active_app_interface(app_name):
             
         st.warning(f"🔥 **Quesito Estratto:**\n\n> *{st.session_state.last_card}*")
 
-    # 3. CHEMISTRY & MAGNETIC METER (Adult 3) - CON SPIEGAZIONE E RIFLESSIONE DETTAGLIATA
+    # 3. CHEMISTRY & MAGNETIC METER (Adult 3) - CON RIFLESSIONE E SPIEGAZIONE
     elif "Magnetic Meter" in app_name:
         st.markdown("### 🧪 Chemistry & Magnetic Meter AI")
         st.write("Analizzatore istantaneo del livello di compatibilità e magnetismo psicologico con spiegazione approfondita.")
@@ -143,7 +190,6 @@ def render_active_app_interface(app_name):
                 score = random.randint(85, 99)
                 st.session_state.magnetism_result = score
                 
-                # Generazione dinamica della spiegazione approfondita
                 explanations = [
                     f"Tra **{p1.capitalize()}** e **{p2.capitalize()}** si attiva una polarità energetica straordinaria. Il punteggio del {score}% evidenzia un'attrazione istintiva in cui le differenze non creano attrito, ma agiscono come carichi opposti che si attraggono magneticamente. C'è una forte componente di curiosità mentale e una tensione sottile che spinge alla scoperta reciproca senza filtri.",
                     f"Il valore del {score}% registrato tra **{p1.capitalize()}** e **{p2.capitalize()}** svela una sintonia sottile ma potentissima. Condividete frequenze emotive elevate: bastano un'occhiata o una battuta per accendere un'intesa immediata. L'attrazione psicologica è il fulcro di questo legame, capace di superare qualsiasi barriera formale.",
@@ -159,7 +205,6 @@ def render_active_app_interface(app_name):
             st.balloons()
             st.success(f"🔥 **Indice di Magnetismo Calcolato: {st.session_state.magnetism_result}%!**")
             
-            # Sezione dedicata alla riflessione e spiegazione analitica
             st.markdown("---")
             st.markdown("### 🧠 Analisi e Riflessione Psicologica dell'Intesa")
             st.info(st.session_state.magnetism_explanation)
@@ -207,7 +252,9 @@ def render_active_app_interface(app_name):
 
     else:
         st.markdown(f"### ⚙️ Modulo: {app_name}")
-        st.write("Modulo interattivo attivo e pronto all'uso.")
+        st.write("Modulo di sistema o utility interattivo attivo e pronto all'uso.")
+        if st.button("Esegui Test Modulo ⚡", key=f"test_generic_{app_name}"):
+            st.success("Esecuzione completata con successo.")
 
     st.divider()
     col_b1, col_b2 = st.columns(2)
@@ -224,9 +271,9 @@ def render_active_app_interface(app_name):
 # --- INTERFACCIA PRINCIPALE ---
 top_col1, top_col2, top_col3 = st.columns([2, 1, 1])
 with top_col1:
-    st.title("🔥 AuraSync OS v7.8 - Analisi Avanzata")
+    st.title("🔥 AuraSync OS v7.9 - Full Catalog")
 with top_col2:
-    st.metric("👥 Stato", "Online")
+    st.metric("👥 Stato Server", "Online")
 with top_col3:
     st.write("") 
     if st.button(">> 📁 Menu App & 18+", type="secondary", use_container_width=True, key="toggle_menu_fixed"):
@@ -239,11 +286,11 @@ if st.session_state.active_view == "bacheca":
     if st.session_state.active_app:
         render_active_app_interface(st.session_state.active_app)
     else:
-        st.subheader("📦 Dashboard Principale")
-        st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & 18+**) per aprire il catalogo ed entrare nel modulo desiderato.")
+        st.subheader("📦 Dashboard Principale - AuraSync OS")
+        st.info("• Clicca sul pulsante in alto a destra (**>> 📁 Menu App & 18+**) per aprire il catalogo completo di tutte le sezioni, giochi, tool e aree 18+.")
 else:
-    st.header("📂 Catalogo Completo Selezionato")
-    ai_query = st.text_input("🤖 Cerca nel catalogo:", placeholder="Es. nocturne, red secrets, chemistry...", key="search_cat_fixed")
+    st.header("📂 Catalogo Completo - Tutte le Categorie")
+    ai_query = st.text_input("🤖 Cerca nel catalogo completo:", placeholder="Es. nocturne, sport, system, community, dating...", key="search_cat_fixed")
     st.divider()
 
     categorie = {}
